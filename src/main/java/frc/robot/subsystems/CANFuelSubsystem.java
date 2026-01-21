@@ -20,6 +20,7 @@ public class CANFuelSubsystem extends SubsystemBase {
   private final SparkMax intakeLauncherRoller;
 
   /** Creates a new CANBallSubsystem. */
+  @SuppressWarnings("removal")
   public CANFuelSubsystem() {
     // create brushed motors for each of the motors on the launcher mechanism
     intakeLauncherRoller = new SparkMax(INTAKE_LAUNCHER_MOTOR_ID, MotorType.kBrushed);
