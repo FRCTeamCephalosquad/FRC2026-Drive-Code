@@ -110,9 +110,14 @@ public class KrakenDriveSubsystem extends SubsystemBase implements DriveSubsyste
 
     // Command factory to create command to drive the robot with joystick inputs.
     public Command driveArcade(DoubleSupplier xSpeed, DoubleSupplier zRotation) {
-        //TODO consider separate joystick version with deadband and expo!
+        // TODO consider separate joystick version with deadband and expo!
         return this.run(
                 () -> m_robotDrive.arcadeDrive(xSpeed.getAsDouble(), zRotation.getAsDouble()));
+    }
+
+    @Override
+    public void arcadeDrive(double s, double r) {
+        m_robotDrive.arcadeDrive(s, r);
     }
 
     @Override

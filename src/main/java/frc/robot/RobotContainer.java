@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -13,6 +16,7 @@ import static frc.robot.Constants.OperatorConstants.*;
 
 import static frc.robot.Constants.FuelConstants.*;
 import frc.robot.commands.Autos;
+import frc.robot.commands.OrientToPointCommand;
 import frc.robot.subsystems.CANFuelSubsystem;
 import frc.robot.subsystems.KrakenDriveSubsystem;
 import frc.robot.subsystems.PoseSubsystem;
@@ -27,7 +31,7 @@ import frc.robot.subsystems.PoseSubsystem;
 public class RobotContainer {
   // The robot's subsystems
   private final KrakenDriveSubsystem driveSubsystem = new KrakenDriveSubsystem();
-  //private final CANFuelSubsystem ballSubsystem = new CANFuelSubsystem();
+  // private final CANFuelSubsystem ballSubsystem = new CANFuelSubsystem();
   private final PoseSubsystem poseSubsystem = new PoseSubsystem(driveSubsystem);
 
   // The driver's controller
@@ -50,7 +54,8 @@ public class RobotContainer {
     // Set the options to show up in the Dashboard for selecting auto modes. If you
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
-    //autoChooser.setDefaultOption("Autonomous", Autos.exampleAuto(driveSubsystem, ballSubsystem));
+    // autoChooser.setDefaultOption("Autonomous", Autos.exampleAuto(driveSubsystem,
+    // ballSubsystem));
 
   }
 
@@ -71,21 +76,26 @@ public class RobotContainer {
     poseSubsystem.setDefaultCommand(
         poseSubsystem.run(poseSubsystem::update));
 
+    Translation2d blueTower = new Translation2d(0.01, 3.73);
+    driverController.y().whileTrue(new OrientToPointCommand(driveSubsystem, poseSubsystem::getCurrentPose, blueTower));
+
     // While the left bumper on operator controller is held, intake Fuel
-    /* 
-    operatorController.leftBumper()
-        .whileTrue(ballSubsystem.runEnd(() -> ballSubsystem.intake(), () -> ballSubsystem.stop()));
-    // While the right bumper on the operator controller is held, spin up for 1
-    // second, then launch fuel. When the button is released, stop.
-    operatorController.rightBumper()
-        .whileTrue(ballSubsystem.spinUpCommand().withTimeout(SPIN_UP_SECONDS)
-            .andThen(ballSubsystem.launchCommand())
-            .finallyDo(() -> ballSubsystem.stop()));
-    // While the A button is held on the operator controller, eject fuel back out
-    // the intake
-    operatorController.a()
-        .whileTrue(ballSubsystem.runEnd(() -> ballSubsystem.eject(), () -> ballSubsystem.stop()));
-*/
+    /*
+     * operatorController.leftBumper()
+     * .whileTrue(ballSubsystem.runEnd(() -> ballSubsystem.intake(), () ->
+     * ballSubsystem.stop()));
+     * // While the right bumper on the operator controller is held, spin up for 1
+     * // second, then launch fuel. When the button is released, stop.
+     * operatorController.rightBumper()
+     * .whileTrue(ballSubsystem.spinUpCommand().withTimeout(SPIN_UP_SECONDS)
+     * .andThen(ballSubsystem.launchCommand())
+     * .finallyDo(() -> ballSubsystem.stop()));
+     * // While the A button is held on the operator controller, eject fuel back out
+     * // the intake
+     * operatorController.a()
+     * .whileTrue(ballSubsystem.runEnd(() -> ballSubsystem.eject(), () ->
+     * ballSubsystem.stop()));
+     */
     // Set the default command for the drive subsystem to the command provided by
     // factory with the values provided by the joystick axes on the driver
     // controller. The Y axis of the controller is inverted so that pushing the
