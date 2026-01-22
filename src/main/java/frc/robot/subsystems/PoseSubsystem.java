@@ -8,11 +8,12 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class PoseSubsystem {
+public class PoseSubsystem extends SubsystemBase {
     // Camera configuration constants
     private static final String CAMERA_LEFT_NAME = "left_cam";
     private static final Transform3d CAMERA_LEFT_TRANSFORM = new Transform3d(
@@ -179,15 +180,6 @@ public class PoseSubsystem {
                 encoders.getLeftPosition(),
                 encoders.getRightPosition(),
                 pose);
-    }
-
-    /**
-     * Gets the current wheel speeds
-     */
-    public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-        return new DifferentialDriveWheelSpeeds(
-                encoders.getLeftVelocity(),
-                encoders.getRightVelocity());
     }
 
     private void publishTelemetry() {

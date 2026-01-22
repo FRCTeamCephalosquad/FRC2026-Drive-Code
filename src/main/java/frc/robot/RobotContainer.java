@@ -67,6 +67,10 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
+    // Normal mode for pose subsystem
+    poseSubsystem.setDefaultCommand(
+        poseSubsystem.run(poseSubsystem::update));
+
     // While the left bumper on operator controller is held, intake Fuel
     operatorController.leftBumper()
         .whileTrue(ballSubsystem.runEnd(() -> ballSubsystem.intake(), () -> ballSubsystem.stop()));
