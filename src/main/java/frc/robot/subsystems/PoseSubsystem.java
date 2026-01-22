@@ -25,15 +25,17 @@ import java.util.Optional;
 
 public class PoseSubsystem extends SubsystemBase {
     // Camera configuration constants
-    private static final String CAMERA_LEFT_NAME = "left_cam";
+        private static final String CAMERA_RIGHT_NAME = "Arducam_OV9281_1";
+    private static final Transform3d CAMERA_RIGHT_TRANSFORM = new Transform3d(
+            new Translation3d(0.35, -0.03, 0.40),
+            new Rotation3d(0, 0, Math.toRadians(-22.5)));
+
+    private static final String CAMERA_LEFT_NAME = "Arducam_OV9281_2";
     private static final Transform3d CAMERA_LEFT_TRANSFORM = new Transform3d(
-            new Translation3d(0.5, 0.0, 0.45),
+            new Translation3d(0.35, 0.03, 0.40),
             new Rotation3d(0, 0, Math.toRadians(22.5)));
 
-    private static final String CAMERA_RIGHT_NAME = "right_cam";
-    private static final Transform3d CAMERA_RIGHT_TRANSFORM = new Transform3d(
-            new Translation3d(0.5, 0.0, 0.45),
-            new Rotation3d(0, 0, Math.toRadians(-22.5)));
+
 
     private final DifferentialDrivePoseEstimator poseEstimator;
 

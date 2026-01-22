@@ -14,6 +14,7 @@ import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -121,7 +122,7 @@ public class KrakenDriveSubsystem extends SubsystemBase implements DriveSubsyste
 
     @Override
     public Rotation2d getRotation2d() {
-        return new Rotation2d(gyro.getYaw());
+        return new Rotation2d(Units.degreesToRadians(-gyro.getYaw()));
     }
 
     @Override
