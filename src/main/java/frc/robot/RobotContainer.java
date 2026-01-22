@@ -10,10 +10,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import static frc.robot.Constants.OperatorConstants.*;
+
 import static frc.robot.Constants.FuelConstants.*;
 import frc.robot.commands.Autos;
-import frc.robot.subsystems.CANDriveSubsystem;
 import frc.robot.subsystems.CANFuelSubsystem;
+import frc.robot.subsystems.KrakenDriveSubsystem;
+import frc.robot.subsystems.PoseSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -24,8 +26,9 @@ import frc.robot.subsystems.CANFuelSubsystem;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final CANDriveSubsystem driveSubsystem = new CANDriveSubsystem();
+  private final KrakenDriveSubsystem driveSubsystem = new KrakenDriveSubsystem();
   private final CANFuelSubsystem ballSubsystem = new CANFuelSubsystem();
+  private final PoseSubsystem poseSubsystem = new PoseSubsystem(driveSubsystem);
 
   // The driver's controller
   private final CommandXboxController driverController = new CommandXboxController(
@@ -48,6 +51,7 @@ public class RobotContainer {
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
     autoChooser.setDefaultOption("Autonomous", Autos.exampleAuto(driveSubsystem, ballSubsystem));
+
   }
 
   /**
