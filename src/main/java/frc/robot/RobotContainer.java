@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,6 +14,7 @@ import static frc.robot.Constants.OperatorConstants.*;
 
 import static frc.robot.Constants.FuelConstants.*;
 import frc.robot.commands.Autos;
+import frc.robot.commands.JoystickDriveCommand;
 import frc.robot.commands.OrientToPointCommand;
 import frc.robot.subsystems.CANFuelSubsystem;
 import frc.robot.subsystems.KrakenDriveSubsystem;
@@ -31,7 +30,8 @@ import frc.robot.subsystems.PoseSubsystem;
 public class RobotContainer {
   // The robot's subsystems
   private final KrakenDriveSubsystem driveSubsystem = new KrakenDriveSubsystem();
-  // private final CANFuelSubsystem ballSubsystem = new CANFuelSubsystem();
+  private final CANFuelSubsystem ballSubsystem = null;// TODO new CANFuelSubsystem();
+
   private final PoseSubsystem poseSubsystem = new PoseSubsystem(driveSubsystem);
 
   // The driver's controller
@@ -60,15 +60,7 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your trigger->command mappings. Triggers can be
-   * created via the {@link Trigger#Trigger(java.util.function.BooleanSupplier)}
-   * constructor with an arbitrary predicate, or via the named factories in
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses
-   * for {@link CommandXboxController Xbox}/
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4}
-   * controllers or
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
+   * Use this method to define your trigger->command mappings.
    */
   private void configureBindings() {
 
@@ -80,33 +72,28 @@ public class RobotContainer {
     driverController.y().whileTrue(new OrientToPointCommand(driveSubsystem, poseSubsystem::getCurrentPose, blueTower));
 
     // While the left bumper on operator controller is held, intake Fuel
-    /*
-     * operatorController.leftBumper()
-     * .whileTrue(ballSubsystem.runEnd(() -> ballSubsystem.intake(), () ->
-     * ballSubsystem.stop()));
-     * // While the right bumper on the operator controller is held, spin up for 1
-     * // second, then launch fuel. When the button is released, stop.
-     * operatorController.rightBumper()
-     * .whileTrue(ballSubsystem.spinUpCommand().withTimeout(SPIN_UP_SECONDS)
-     * .andThen(ballSubsystem.launchCommand())
-     * .finallyDo(() -> ballSubsystem.stop()));
-     * // While the A button is held on the operator controller, eject fuel back out
-     * // the intake
-     * operatorController.a()
-     * .whileTrue(ballSubsystem.runEnd(() -> ballSubsystem.eject(), () ->
-     * ballSubsystem.stop()));
-     */
+    if (ballSubsystem != null) {
+      operatorController.leftBumper()
+          .whileTrue(ballSubsystem.runEnd(() -> ballSubsystem.intake(), () -> ballSubsystem.stop()));
+      // While the right bumper on the operator controller is held, spin up for 1
+      // second, then launch fuel. When the button is released, stop.
+      operatorController.rightBumper()
+          .whileTrue(ballSubsystem.spinUpCommand().withTimeout(SPIN_UP_SECONDS)
+              .andThen(ballSubsystem.launchCommand())
+              .finallyDo(() -> ballSubsystem.stop()));
+      // While the A button is held on the operator controller, eject fuel back out
+      // the intake
+      operatorController.a()
+          .whileTrue(ballSubsystem.runEnd(() -> ballSubsystem.eject(), () -> ballSubsystem.stop()));
+    }
+
     // Set the default command for the drive subsystem to the command provided by
     // factory with the values provided by the joystick axes on the driver
-    // controller. The Y axis of the controller is inverted so that pushing the
-    // stick away from you (a negative value) drives the robot forwards (a positive
-    // value). The X-axis is also inverted so a positive value (stick to the right)
-    // results in clockwise rotation (front of the robot turning right). Both axes
-    // are also scaled down so the rotation is more easily controllable.
     driveSubsystem.setDefaultCommand(
-        driveSubsystem.driveArcade(
-            () -> -driverController.getLeftY() * DRIVE_SCALING,
-            () -> -driverController.getRightX() * ROTATION_SCALING));
+        new JoystickDriveCommand(
+            () -> -driverController.getLeftY(),
+            () -> -driverController.getRightX(),
+            driveSubsystem));
   }
 
   /**

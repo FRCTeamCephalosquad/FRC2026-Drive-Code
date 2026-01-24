@@ -18,11 +18,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import static frc.robot.Constants.DriveConstants.*;
 
-import java.util.function.DoubleSupplier;
+import static frc.robot.Constants.DriveConstants.*;
 
 public class KrakenDriveSubsystem extends SubsystemBase implements DriveSubsystem {
     // Drive Motors
@@ -89,35 +87,15 @@ public class KrakenDriveSubsystem extends SubsystemBase implements DriveSubsyste
         }
 
         m_robotDrive = new DifferentialDrive(m_leftDrive::set, m_rightDrive::set);
-    }
 
-    public void resetDistanceForward() {
-        rightEncoder.reset();
-        leftEncoder.reset();
-    }
-
-    public double getDistanceForward() {
-        return (rightEncoder.getDistance() + leftEncoder.getDistance()) / 2;
-    }
-
-    public void setMaxOutput(double m) {
-        m_robotDrive.setMaxOutput(m);
-    }
-
-    public void stopMotor() {
-        m_robotDrive.stopMotor();
-    }
-
-    // Command factory to create command to drive the robot with joystick inputs.
-    public Command driveArcade(DoubleSupplier xSpeed, DoubleSupplier zRotation) {
-        // TODO consider separate joystick version with deadband and expo!
-        return this.run(
-                () -> m_robotDrive.arcadeDrive(xSpeed.getAsDouble(), zRotation.getAsDouble()));
+        //Joystick deadband is covered in Joystick Drive Command class
+        m_robotDrive.setDeadband(0);
     }
 
     @Override
     public void arcadeDrive(double s, double r) {
-        m_robotDrive.arcadeDrive(s, r);
+        //Expo handled in joystick drive command
+        m_robotDrive.arcadeDrive(s, r, false);
     }
 
     @Override

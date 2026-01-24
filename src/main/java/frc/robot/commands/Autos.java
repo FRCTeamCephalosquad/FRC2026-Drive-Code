@@ -11,6 +11,7 @@ import frc.robot.subsystems.DriveSubsystem;
 
 public final class Autos {
   // Example autonomous command which drives forward for 1 second.
+  /* 
   public static final Command exampleAuto(DriveSubsystem driveSubsystem, CANFuelSubsystem ballSubsystem) {
     return new SequentialCommandGroup(
         // Drive backwards for .25 seconds. The driveArcadeAuto command factory
@@ -27,4 +28,5 @@ public final class Autos {
         // Stop running the launcher
         ballSubsystem.runOnce(() -> ballSubsystem.stop()));
   }
+        */
 }

@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.drive.RobotDriveBase;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants. This class should not be used for any other
@@ -57,5 +59,10 @@ public final class Constants {
     // help avoid driving and turning too fast and being difficult to control
     public static final double DRIVE_SCALING = .7;
     public static final double ROTATION_SCALING = .8;
+    public static final double DRIVE_DEADBAND = RobotDriveBase.kDefaultDeadband;
+    public static final double DRIVE_EXPO = 2;
+    //Slew Limits. Lower is smoother, but more sluggish
+    public static final double DRIVE_FB_SLEW_LIMIT = 2.0;   
+    public static final double DRIVE_ROTATE_SLEW_LIMIT = 2.0;
   }
 }
