@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -20,6 +21,7 @@ public class OrientToPointCommand extends Command {
     private static final double KD = 0.005;
     private static final double TOLERANCE_DEGREES = 2.0;
     private static final double MAX_ROTATION_SPEED = 0.5; // Percentage
+    private static final double MIN_ROTATION_SPEED = 0.02; // Deadband to prevent oscillation
     
     public OrientToPointCommand(
             DriveSubsystem drive,
@@ -55,6 +57,18 @@ public class OrientToPointCommand extends Command {
         // Clamp rotation speed
         rotationSpeed = Math.max(-MAX_ROTATION_SPEED, 
                                  Math.min(MAX_ROTATION_SPEED, rotationSpeed));
+        
+        // Apply deadband to prevent oscillation
+        if (Math.abs(rotationSpeed) < MIN_ROTATION_SPEED) {
+            rotationSpeed = 0;
+        }
+        
+        // Telemetry for tuning
+        SmartDashboard.putNumber("OrientToPoint/AngleToTarget", angleToTarget);
+        SmartDashboard.putNumber("OrientToPoint/CurrentHeading", currentHeading);
+        SmartDashboard.putNumber("OrientToPoint/Error", angleToTarget - currentHeading);
+        SmartDashboard.putNumber("OrientToPoint/RotationSpeed", rotationSpeed);
+        SmartDashboard.putBoolean("OrientToPoint/AtSetpoint", rotationController.atSetpoint());
         
         // Drive with rotation only (no forward/backward movement)
         drive.arcadeDrive(0, rotationSpeed);
