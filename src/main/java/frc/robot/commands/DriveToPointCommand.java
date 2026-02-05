@@ -25,7 +25,7 @@ public class DriveToPointCommand extends OrientationCommandBase {
     private static final double DISTANCE_KI = 0.0;
     private static final double DISTANCE_KD = 0.0;
     private static final double ARRIVAL_TOLERANCE_METERS = 0.15;
-    private static final double MAX_FORWARD_SPEED = 0.6;
+    private static final double MAX_FORWARD_SPEED = 0.2;
     private static final double MIN_FORWARD_SPEED = 0.1; // Minimum speed to overcome friction
     
     // Slow down as we approach the target
@@ -84,7 +84,7 @@ public class DriveToPointCommand extends OrientationCommandBase {
         SmartDashboard.putNumber(getTelemetryPrefix() + "/TargetDistance", 0.0);
         SmartDashboard.putBoolean(getTelemetryPrefix() + "/HasArrived", isFinished());
         
-        return forwardSpeed;
+        return -forwardSpeed;
     }
     
     @Override

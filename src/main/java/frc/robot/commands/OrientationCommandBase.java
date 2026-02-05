@@ -23,7 +23,7 @@ public abstract class OrientationCommandBase extends Command {
     protected static final double ROTATION_KI = 0.0;
     protected static final double ROTATION_KD = 0.005;
     protected static final double ANGLE_TOLERANCE_DEGREES = 2.0;
-    protected static final double MAX_ROTATION_SPEED = 0.5;
+    protected static final double MAX_ROTATION_SPEED = 0.2;
     protected static final double MIN_ROTATION_SPEED = 0.02; // Deadband
     
     protected OrientationCommandBase(DriveSubsystem drive, Supplier<Pose2d> poseEstimator) {

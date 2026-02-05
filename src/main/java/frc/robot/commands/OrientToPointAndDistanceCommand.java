@@ -26,7 +26,7 @@ public class OrientToPointAndDistanceCommand extends OrientationCommandBase {
     private static final double DISTANCE_KI = 0.0;
     private static final double DISTANCE_KD = 0.0;
     private static final double DISTANCE_TOLERANCE_METERS = 0.1;
-    private static final double MAX_FORWARD_SPEED = 0.3;
+    private static final double MAX_FORWARD_SPEED = 0.2;
     private static final double MIN_FORWARD_SPEED = 0.02; // Deadband
     
     // Angle threshold to prioritize orientation over distance correction
@@ -101,7 +101,7 @@ public class OrientToPointAndDistanceCommand extends OrientationCommandBase {
         SmartDashboard.putNumber(getTelemetryPrefix() + "/DistanceError", currentDistance - targetDistanceMeters);
         SmartDashboard.putBoolean(getTelemetryPrefix() + "/AtDistanceSetpoint", distanceController.atSetpoint());
         
-        return forwardSpeed;
+        return -forwardSpeed;
     }
     
     @Override
