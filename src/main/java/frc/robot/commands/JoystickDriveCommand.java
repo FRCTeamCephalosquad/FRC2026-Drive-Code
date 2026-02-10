@@ -34,8 +34,8 @@ public class JoystickDriveCommand extends Command {
         double zRotation = zRotationSupplier.getAsDouble();
 
         // Apply scaling
-        xSpeed *= DRIVE_SCALING;
-        zRotation *= ROTATION_SCALING;
+        xSpeed = xSpeed * DRIVE_SCALING;
+        zRotation = zRotation * ROTATION_SCALING;
 
         // Clamp value
         xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);

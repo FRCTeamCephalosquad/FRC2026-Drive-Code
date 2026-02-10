@@ -15,9 +15,12 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import static edu.wpi.first.units.Units.Meters;
 import static frc.robot.Constants.DriveConstants.*;
 
 @SuppressWarnings("removal")
@@ -29,12 +32,17 @@ public class CANDriveSubsystem extends SubsystemBase implements DriveSubsystem {
 
   private final DifferentialDrive drive;
 
+   // Drive Info
+    private DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(
+            Distance.ofBaseUnits(.546, Meters)); // TODO Measure This
+
   public CANDriveSubsystem() {
     // create brushed motors for drive
-    leftLeader = new SparkMax(LEFT_LEADER_ID, MotorType.kBrushed);
-    leftFollower = new SparkMax(LEFT_FOLLOWER_ID, MotorType.kBrushed);
-    rightLeader = new SparkMax(RIGHT_LEADER_ID, MotorType.kBrushed);
-    rightFollower = new SparkMax(RIGHT_FOLLOWER_ID, MotorType.kBrushed);
+    leftLeader = new SparkMax(LEFT_LEADER_ID, MotorType.kBrushless);
+    leftFollower = new SparkMax(LEFT_FOLLOWER_ID, MotorType.kBrushless);
+    rightLeader = new SparkMax(RIGHT_LEADER_ID, MotorType.kBrushless);
+    rightFollower = new SparkMax(RIGHT_FOLLOWER_ID, MotorType.kBrushless);
+    
 
     // set up differential drive class
     drive = new DifferentialDrive(leftLeader, rightLeader);
@@ -67,11 +75,9 @@ public class CANDriveSubsystem extends SubsystemBase implements DriveSubsystem {
 
     // Remove following, then apply config to right leader
     config.disableFollowerMode();
-    rightLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    // Set config to inverted and then apply to left leader. Set Left side inverted
-    // so that postive values drive both sides forward
-    config.inverted(true);
     leftLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    config.inverted(true);
+    rightLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   @Override
@@ -86,32 +92,32 @@ public class CANDriveSubsystem extends SubsystemBase implements DriveSubsystem {
 
   @Override
   public double getLeftPosition() {
-    throw new UnsupportedOperationException("Unimplemented method 'getLeftPosition'");
+    return 0;//TODO
   }
 
   @Override
   public double getRightPosition() {
-    throw new UnsupportedOperationException("Unimplemented method 'getRightPosition'");
+    return 0;//TODO
   }
 
   @Override
   public double getLeftVelocity() {
-    throw new UnsupportedOperationException("Unimplemented method 'getLeftVelocity'");
+    return 0;//TODO
   }
 
   @Override
   public double getRightVelocity() {
-    throw new UnsupportedOperationException("Unimplemented method 'getRightVelocity'");
+    return 0;//TODO
   }
 
   @Override
   public Rotation2d getRotation2d() {
-    throw new UnsupportedOperationException("Unimplemented method 'getRotation2d'");
+    return new Rotation2d(0); //TODO
   }
 
   @Override
   public DifferentialDriveKinematics getDifferentialDriveKinematics() {
-    throw new UnsupportedOperationException("Unimplemented method 'getDifferentialDriveKinematics'");
+    return m_kinematics;
   }
 
   @Override
