@@ -20,6 +20,7 @@ import frc.robot.subsystems.CANDriveSubsystem;
 import frc.robot.subsystems.CANFuelSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.KrakenDriveSubsystem;
+import frc.robot.subsystems.PDUSubsystem;
 import frc.robot.subsystems.PoseSubsystem;
 
 /**
@@ -33,7 +34,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem driveSubsystem = new CANDriveSubsystem();
   private final CANFuelSubsystem ballSubsystem = null;// TODO new CANFuelSubsystem();
-
+  private final PDUSubsystem pduSubsystem = new PDUSubsystem();
   private final PoseSubsystem poseSubsystem = new PoseSubsystem(driveSubsystem);
 
   // The driver's controller
@@ -67,10 +68,12 @@ public class RobotContainer {
   private void configureBindings() {
 
     // Normal mode for pose subsystem
-    /* 
-    poseSubsystem.setDefaultCommand(
-        poseSubsystem.run(poseSubsystem::update));
-        */
+    /*
+     * poseSubsystem.setDefaultCommand(
+     * poseSubsystem.run(poseSubsystem::update));
+     */
+
+    pduSubsystem.setDefaultCommand(pduSubsystem.run(pduSubsystem::updateCurrent));
 
     Translation2d blueTower = new Translation2d(0.01, 3.73);
     driverController.y().whileTrue(new OrientToPointCommand(driveSubsystem, poseSubsystem::getCurrentPose, blueTower));

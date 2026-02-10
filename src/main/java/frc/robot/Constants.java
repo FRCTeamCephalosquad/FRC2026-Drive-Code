@@ -57,8 +57,8 @@ public final class Constants {
 
     // This value is multiplied by the joystick value when driving the robot to
     // help avoid driving and turning too fast and being difficult to control
-    public static final double DRIVE_SCALING = .4;
-    public static final double ROTATION_SCALING = .5;
+    public static final double DRIVE_SCALING = .2;
+    public static final double ROTATION_SCALING = .2;
     public static final double DRIVE_DEADBAND = RobotDriveBase.kDefaultDeadband;
     public static final double DRIVE_EXPO = 2;
     //Slew Limits. Lower is smoother, but more sluggish

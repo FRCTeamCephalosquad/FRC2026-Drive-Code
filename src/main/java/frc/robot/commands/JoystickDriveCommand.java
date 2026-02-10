@@ -33,21 +33,21 @@ public class JoystickDriveCommand extends Command {
         double xSpeed = xSpeedSupplier.getAsDouble();
         double zRotation = zRotationSupplier.getAsDouble();
 
+        // Clamp value
+        xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
+        zRotation = MathUtil.clamp(zRotation, -1.0, 1.0);
+        
+        // Apply Expo
+        xSpeed = MathUtil.copyDirectionPow(xSpeed, DRIVE_EXPO);
+        zRotation = MathUtil.copyDirectionPow(zRotation, DRIVE_EXPO);
+
         // Apply scaling
         xSpeed = xSpeed * DRIVE_SCALING;
         zRotation = zRotation * ROTATION_SCALING;
 
-        // Clamp value
-        xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
-        zRotation = MathUtil.clamp(zRotation, -1.0, 1.0);
-
         // Apply deadband
         xSpeed = MathUtil.applyDeadband(xSpeed, DRIVE_DEADBAND);
         zRotation = MathUtil.applyDeadband(zRotation, DRIVE_DEADBAND);
-
-        // Apply Expo
-        xSpeed = MathUtil.copyDirectionPow(xSpeed, DRIVE_EXPO);
-        zRotation = MathUtil.copyDirectionPow(zRotation, DRIVE_EXPO);
 
         // Limit slew rates
         xSpeed = xLimiter.calculate(xSpeed);
