@@ -31,22 +31,35 @@ public final class Constants {
 
   public static final class FuelConstants {
     // Motor controller IDs for Fuel Mechanism motors
-    public static final int FEEDER_MOTOR_ID = 6;
-    public static final int INTAKE_LAUNCHER_MOTOR_ID = 7;
+    public static final int LEFT_INTAKE_LAUNCHER_MOTOR_ID = 5;
+    public static final int RIGHT_INTAKE_LAUNCHER_MOTOR_ID = 6;
+    public static final int INDEXER_MOTOR_ID = 8;
 
-    // Current limit and nominal voltage for fuel mechanism motors.
-    public static final int FEEDER_MOTOR_CURRENT_LIMIT = 60;
-    public static final int LAUNCHER_MOTOR_CURRENT_LIMIT = 60;
+    // Current limit for fuel mechanism motors.
+    public static final int INDEXER_MOTOR_CURRENT_LIMIT = 80;
+    public static final int LAUNCHER_MOTOR_CURRENT_LIMIT = 80;
 
-    // Voltage values for various fuel operations. These values may need to be tuned
-    // based on exact robot construction.
-    // See the Software Guide for tuning information
-    public static final double INTAKING_FEEDER_VOLTAGE = -12;
-    public static final double INTAKING_INTAKE_VOLTAGE = 10;
-    public static final double LAUNCHING_FEEDER_VOLTAGE = 9;
-    public static final double LAUNCHING_LAUNCHER_VOLTAGE = 10.6;
-    public static final double SPIN_UP_FEEDER_VOLTAGE = -6;
-    public static final double SPIN_UP_SECONDS = 1;
+    // All values likely need to be tuned based on your robot
+    public static final double INDEXER_INTAKING_PERCENT = -.8;
+    public static final double INDEXER_LAUNCHING_PERCENT = 0.6;
+    public static final double INDEXER_SPIN_UP_PRE_LAUNCH_PERCENT = -0.5;
+
+    public static final double INTAKE_INTAKING_PERCENT = 0.6;
+    public static final double LAUNCHING_LAUNCHER_PERCENT = .85;
+    public static final double INTAKE_EJECT_PERCENT = -0.8;
+
+    public static final double SPIN_UP_SECONDS = 0.75;
+  }
+
+  public static final class ClimbConstatns {
+    // Motor controller IDs for Climb motor
+    public static final int CLIMBER_MOTOR_ID = 7;
+
+    // Current limit for climb motor
+    public static final int CLIMBER_MOTOR_CURRENT_LIMIT = 40;
+    // Percentage to power the motor both up and down
+    public static final double CLIMBER_MOTOR_DOWN_PERCENT = -0.8;
+    public static final double CLIMBER_MOTOR_UP_PERCENT = 0.8;
   }
 
   public static final class OperatorConstants {
@@ -61,8 +74,9 @@ public final class Constants {
     public static final double ROTATION_SCALING = .2;
     public static final double DRIVE_DEADBAND = RobotDriveBase.kDefaultDeadband;
     public static final double DRIVE_EXPO = 2;
-    //Slew Limits. Lower is smoother, but more sluggish
-    public static final double DRIVE_FB_SLEW_LIMIT = 2.0;   
+    
+    // Slew Limits. Lower is smoother, but more sluggish
+    public static final double DRIVE_FB_SLEW_LIMIT = 2.0;
     public static final double DRIVE_ROTATE_SLEW_LIMIT = 2.0;
   }
 }

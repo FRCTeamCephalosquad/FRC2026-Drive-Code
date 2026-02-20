@@ -12,34 +12,31 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import static frc.robot.Constants.OperatorConstants.*;
 
-import static frc.robot.Constants.FuelConstants.*;
-import frc.robot.commands.Autos;
 import frc.robot.commands.JoystickDriveCommand;
 import frc.robot.commands.OrientToPointCommand;
+import frc.robot.commands.balls.Eject;
+import frc.robot.commands.balls.Intake;
+import frc.robot.commands.balls.LaunchSequence;
+import frc.robot.commands.climb.ClimbDown;
+import frc.robot.commands.climb.ClimbUp;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.CANFuelSubsystem;
+import frc.robot.subsystems.FuelSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.PDUSubsystem;
 import frc.robot.subsystems.PoseSubsystem;
 
-/**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a "declarative" paradigm, very little robot logic should
- * actually be handled in the {@link Robot} periodic methods (other than the
- * scheduler calls). Instead, the structure of the robot (including subsystems,
- * commands, and trigger mappings) should be declared here.
- */
 public class RobotContainer {
-  // The robot's subsystems
+
+  // SUBSYSTEMS
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
-  private final CANFuelSubsystem ballSubsystem = null;// TODO new CANFuelSubsystem();
+  private final FuelSubsystem fuelSubsystem = new FuelSubsystem();
+  private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   private final PDUSubsystem pduSubsystem = new PDUSubsystem();
   private final PoseSubsystem poseSubsystem = new PoseSubsystem(driveSubsystem);
 
-  // The driver's controller
+  // CONTROLLERS
   private final CommandXboxController driverController = new CommandXboxController(
       DRIVER_CONTROLLER_PORT);
-
-  // The operator's controller
   private final CommandXboxController operatorController = new CommandXboxController(
       OPERATOR_CONTROLLER_PORT);
 
@@ -66,39 +63,29 @@ public class RobotContainer {
   private void configureBindings() {
 
     // Normal mode for pose subsystem
-    /*
-     * poseSubsystem.setDefaultCommand(
-     * poseSubsystem.run(poseSubsystem::update));
-     */
-
     pduSubsystem.setDefaultCommand(pduSubsystem.run(pduSubsystem::updateCurrent));
 
-    Translation2d blueTower = new Translation2d(0.01, 3.73);
-    driverController.y().whileTrue(new OrientToPointCommand(driveSubsystem, poseSubsystem::getCurrentPose, blueTower));
-
-    // While the left bumper on operator controller is held, intake Fuel
-    if (ballSubsystem != null) {
-      operatorController.leftBumper()
-          .whileTrue(ballSubsystem.runEnd(() -> ballSubsystem.intake(), () -> ballSubsystem.stop()));
-      // While the right bumper on the operator controller is held, spin up for 1
-      // second, then launch fuel. When the button is released, stop.
-      operatorController.rightBumper()
-          .whileTrue(ballSubsystem.spinUpCommand().withTimeout(SPIN_UP_SECONDS)
-              .andThen(ballSubsystem.launchCommand())
-              .finallyDo(() -> ballSubsystem.stop()));
-      // While the A button is held on the operator controller, eject fuel back out
-      // the intake
-      operatorController.a()
-          .whileTrue(ballSubsystem.runEnd(() -> ballSubsystem.eject(), () -> ballSubsystem.stop()));
-    }
-
-    // Set the default command for the drive subsystem to the command provided by
-    // factory with the values provided by the joystick axes on the driver
+    // Drive Default
     driveSubsystem.setDefaultCommand(
         new JoystickDriveCommand(
             () -> -driverController.getLeftY(),
             () -> -driverController.getRightX(),
             driveSubsystem));
+
+    // Fuesl and Climber both default to stop
+    fuelSubsystem.setDefaultCommand(fuelSubsystem.run(() -> fuelSubsystem.stop()));
+    climberSubsystem.setDefaultCommand(climberSubsystem.run(() -> climberSubsystem.stop()));
+
+    // Test orientation code
+    Translation2d blueTower = new Translation2d(0.01, 3.73);
+    driverController.y().whileTrue(new OrientToPointCommand(driveSubsystem, poseSubsystem::getCurrentPose, blueTower));
+
+    //Some probably stupid operator commands
+    operatorController.leftBumper().whileTrue(new Intake(fuelSubsystem));
+    operatorController.rightBumper().whileTrue(new LaunchSequence(fuelSubsystem));
+    operatorController.a().whileTrue(new Eject(fuelSubsystem));
+    operatorController.povDown().whileTrue(new ClimbDown(climberSubsystem));
+    operatorController.povUp().whileTrue(new ClimbUp(climberSubsystem));
   }
 
   /**
