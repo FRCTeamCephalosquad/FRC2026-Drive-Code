@@ -16,10 +16,8 @@ import static frc.robot.Constants.FuelConstants.*;
 import frc.robot.commands.Autos;
 import frc.robot.commands.JoystickDriveCommand;
 import frc.robot.commands.OrientToPointCommand;
-import frc.robot.subsystems.CANDriveSubsystem;
-import frc.robot.subsystems.CANFuelSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.KrakenDriveSubsystem;
+import frc.robot.subsystems.CANFuelSubsystem;
 import frc.robot.subsystems.PDUSubsystem;
 import frc.robot.subsystems.PoseSubsystem;
 
@@ -32,7 +30,7 @@ import frc.robot.subsystems.PoseSubsystem;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveSubsystem driveSubsystem = new CANDriveSubsystem();
+  private final DriveSubsystem driveSubsystem = new DriveSubsystem();
   private final CANFuelSubsystem ballSubsystem = null;// TODO new CANFuelSubsystem();
   private final PDUSubsystem pduSubsystem = new PDUSubsystem();
   private final PoseSubsystem poseSubsystem = new PoseSubsystem(driveSubsystem);
