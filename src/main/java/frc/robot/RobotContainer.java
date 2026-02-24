@@ -12,7 +12,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import static frc.robot.Constants.OperatorConstants.*;
 
-import frc.robot.commands.JoystickDriveCommand;
+import frc.robot.commands.JoystickArcadeDriveCommand;
+import frc.robot.commands.JoystickTankDriveCommand;
 import frc.robot.commands.OrientToPointCommand;
 import frc.robot.commands.balls.Eject;
 import frc.robot.commands.balls.Intake;
@@ -66,26 +67,37 @@ public class RobotContainer {
     pduSubsystem.setDefaultCommand(pduSubsystem.run(pduSubsystem::updateCurrent));
 
     // Drive Default
-    driveSubsystem.setDefaultCommand(
-        new JoystickDriveCommand(
-            () -> -driverController.getLeftY(),
-            () -> -driverController.getRightX(),
-            driveSubsystem));
+    if (false) {
+      driveSubsystem.setDefaultCommand(
+          new JoystickArcadeDriveCommand(
+              () -> -driverController.getLeftY(),
+              () -> -driverController.getLeftX(),
+              driveSubsystem));
+    } else {
+      driveSubsystem.setDefaultCommand(
+          new JoystickTankDriveCommand(
+              () -> -driverController.getLeftY(),
+              () -> -driverController.getRightY(),
+              driveSubsystem));
+    }
 
     // Fuesl and Climber both default to stop
     fuelSubsystem.setDefaultCommand(fuelSubsystem.run(() -> fuelSubsystem.stop()));
     climberSubsystem.setDefaultCommand(climberSubsystem.run(() -> climberSubsystem.stop()));
 
     // Test orientation code
-    Translation2d blueTower = new Translation2d(0.01, 3.73);
-    driverController.y().whileTrue(new OrientToPointCommand(driveSubsystem, poseSubsystem::getCurrentPose, blueTower));
+    // Translation2d blueTower = new Translation2d(0.01, 3.73);
+    // driverController.y().whileTrue(new OrientToPointCommand(driveSubsystem,
+    // poseSubsystem::getCurrentPose, blueTower));
 
-    //Some probably stupid operator commands
-    operatorController.leftBumper().whileTrue(new Intake(fuelSubsystem));
-    operatorController.rightBumper().whileTrue(new LaunchSequence(fuelSubsystem));
-    operatorController.a().whileTrue(new Eject(fuelSubsystem));
-    operatorController.povDown().whileTrue(new ClimbDown(climberSubsystem));
-    operatorController.povUp().whileTrue(new ClimbUp(climberSubsystem));
+    // Some probably stupid operator commands
+    // TODO operatorController.a().whileTrue(AUTO AIM);
+    operatorController.leftTrigger().whileTrue(new Intake(fuelSubsystem));
+    operatorController.rightTrigger().whileTrue(new LaunchSequence(fuelSubsystem));
+    operatorController.start().whileTrue(new Eject(fuelSubsystem));
+
+    driverController.povDown().whileTrue(new ClimbDown(climberSubsystem));
+    driverController.povUp().whileTrue(new ClimbUp(climberSubsystem));
   }
 
   /**

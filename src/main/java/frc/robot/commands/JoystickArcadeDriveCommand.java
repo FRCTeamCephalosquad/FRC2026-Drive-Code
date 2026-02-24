@@ -9,7 +9,7 @@ import frc.robot.subsystems.DriveSubsystem;
 
 import static frc.robot.Constants.OperatorConstants.*;
 
-public class JoystickDriveCommand extends Command {
+public class JoystickArcadeDriveCommand extends Command {
     private final DoubleSupplier xSpeedSupplier;
     private final DoubleSupplier zRotationSupplier;
     private final DriveSubsystem driveSubsystem;
@@ -17,7 +17,7 @@ public class JoystickDriveCommand extends Command {
     private final SlewRateLimiter xLimiter = new SlewRateLimiter(DRIVE_FB_SLEW_LIMIT);
     private final SlewRateLimiter rotationLimiter = new SlewRateLimiter(DRIVE_ROTATE_SLEW_LIMIT);
 
-    public JoystickDriveCommand(DoubleSupplier xSpeed, DoubleSupplier zRotation, DriveSubsystem driveSubsystem) {
+    public JoystickArcadeDriveCommand(DoubleSupplier xSpeed, DoubleSupplier zRotation, DriveSubsystem driveSubsystem) {
         this.xSpeedSupplier = xSpeed;
         this.zRotationSupplier = zRotation;
         this.driveSubsystem = driveSubsystem;

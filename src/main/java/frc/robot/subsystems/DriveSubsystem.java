@@ -138,4 +138,9 @@ public class DriveSubsystem extends SubsystemBase implements EncoderIO, GyroIO {
     // Expo handled in joystick drive command
     drive.arcadeDrive(s, r, false);
   }
+
+  public void tankDrive(double l, double r) {
+    drive.tankDrive(l, r);
+  }
+
 }
