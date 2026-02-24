@@ -17,11 +17,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.PoseSubsystem.EncoderIO;
 import frc.robot.subsystems.PoseSubsystem.GyroIO;
 
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static frc.robot.Constants.DriveConstants.*;
 
@@ -34,9 +36,15 @@ public class DriveSubsystem extends SubsystemBase implements EncoderIO, GyroIO {
 
   private final DifferentialDrive drive;
 
-   // Drive Info
-    private DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(
-            Distance.ofBaseUnits(.546, Meters)); // TODO Measure This
+  private final double DRIVE_WIDTH = 0.55; //Meters
+  private final double DRIVE_GEAR_RATIO = 8.46; // 8.46:1 Toughbox Mini S
+  private final double WHEEL_DIAMETER = Inches.of(6).in(Meters);
+  private final double WHEEL_CIRCUMFRENCE = WHEEL_DIAMETER * Math.PI;
+  private final double ENCODER_RATIO = 1.0 / DRIVE_GEAR_RATIO * WHEEL_CIRCUMFRENCE;
+
+  // Drive Info
+  private DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(
+      Distance.ofBaseUnits(DRIVE_WIDTH, Meters)); // TODO Measure This
 
   public DriveSubsystem() {
     // create brushed motors for drive
@@ -44,7 +52,6 @@ public class DriveSubsystem extends SubsystemBase implements EncoderIO, GyroIO {
     leftFollower = new SparkMax(LEFT_FOLLOWER_ID, MotorType.kBrushless);
     rightLeader = new SparkMax(RIGHT_LEADER_ID, MotorType.kBrushless);
     rightFollower = new SparkMax(RIGHT_FOLLOWER_ID, MotorType.kBrushless);
-    
 
     // set up differential drive class
     drive = new DifferentialDrive(leftLeader, rightLeader);
@@ -84,6 +91,12 @@ public class DriveSubsystem extends SubsystemBase implements EncoderIO, GyroIO {
 
   @Override
   public void periodic() {
+        SmartDashboard.putNumber("Drive Right Position", getRightPosition());
+        SmartDashboard.putNumber("Drive Left Position", getLeftPosition());
+        SmartDashboard.putNumber("Drive Right Velocity", getRightVelocity());
+        SmartDashboard.putNumber("Drive Left Velocity", getLeftVelocity());
+
+        SmartDashboard.putNumber("Rotation 2d", getRotation2d().getDegrees());
   }
 
   // Command factory to create command to drive the robot with joystick inputs.
@@ -94,27 +107,27 @@ public class DriveSubsystem extends SubsystemBase implements EncoderIO, GyroIO {
 
   @Override
   public double getLeftPosition() {
-    return 0;//TODO
+    return leftLeader.getEncoder().getPosition() * ENCODER_RATIO;
   }
 
   @Override
   public double getRightPosition() {
-    return 0;//TODO
+    return rightLeader.getEncoder().getPosition() * ENCODER_RATIO;
   }
 
   @Override
   public double getLeftVelocity() {
-    return 0;//TODO
+    return leftLeader.getEncoder().getVelocity() * ENCODER_RATIO;
   }
 
   @Override
   public double getRightVelocity() {
-    return 0;//TODO
+    return rightLeader.getEncoder().getVelocity() * ENCODER_RATIO;
   }
 
   @Override
   public Rotation2d getRotation2d() {
-    return new Rotation2d(0); //TODO
+    return new Rotation2d(0); // TODO
   }
 
   public DifferentialDriveKinematics getDifferentialDriveKinematics() {
