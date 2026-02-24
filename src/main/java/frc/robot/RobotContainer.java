@@ -67,7 +67,7 @@ public class RobotContainer {
     pduSubsystem.setDefaultCommand(pduSubsystem.run(pduSubsystem::updateCurrent));
 
     // Drive Default
-    if (false) {
+    if (true) {
       driveSubsystem.setDefaultCommand(
           new JoystickArcadeDriveCommand(
               () -> -driverController.getLeftY(),
