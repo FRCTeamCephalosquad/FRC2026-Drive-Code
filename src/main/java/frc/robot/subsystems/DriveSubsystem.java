@@ -15,28 +15,42 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.MutDistance;
+import edu.wpi.first.units.measure.MutLinearVelocity;
+import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.units.measure.Velocity;
+import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.PoseSubsystem.EncoderIO;
 import frc.robot.subsystems.PoseSubsystem.GyroIO;
 
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.DriveConstants.*;
 
 @SuppressWarnings("removal")
 public class DriveSubsystem extends SubsystemBase implements EncoderIO, GyroIO {
-  private final SparkMax leftLeader;
-  private final SparkMax leftFollower;
-  private final SparkMax rightLeader;
-  private final SparkMax rightFollower;
 
-  private final DifferentialDrive drive;
+  // create brushed motors for drive
+  private final SparkMax leftLeader = new SparkMax(LEFT_LEADER_ID, MotorType.kBrushless);
+  private final SparkMax leftFollower = new SparkMax(LEFT_FOLLOWER_ID, MotorType.kBrushless);
+  private final SparkMax rightLeader = new SparkMax(RIGHT_LEADER_ID, MotorType.kBrushless);
+  private final SparkMax rightFollower = new SparkMax(RIGHT_FOLLOWER_ID, MotorType.kBrushless);
 
-  private final double DRIVE_WIDTH = 0.55; //Meters
+  // set up differential drive class
+  private final DifferentialDrive drive = new DifferentialDrive(leftLeader, rightLeader);;
+
+  // drivetrain constants
+  private final double DRIVE_WIDTH = 0.55; // Meters
   private final double DRIVE_GEAR_RATIO = 8.46; // 8.46:1 Toughbox Mini S
   private final double WHEEL_DIAMETER = Inches.of(6).in(Meters);
   private final double WHEEL_CIRCUMFRENCE = WHEEL_DIAMETER * Math.PI;
@@ -47,15 +61,6 @@ public class DriveSubsystem extends SubsystemBase implements EncoderIO, GyroIO {
       Distance.ofBaseUnits(DRIVE_WIDTH, Meters)); // TODO Measure This
 
   public DriveSubsystem() {
-    // create brushed motors for drive
-    leftLeader = new SparkMax(LEFT_LEADER_ID, MotorType.kBrushless);
-    leftFollower = new SparkMax(LEFT_FOLLOWER_ID, MotorType.kBrushless);
-    rightLeader = new SparkMax(RIGHT_LEADER_ID, MotorType.kBrushless);
-    rightFollower = new SparkMax(RIGHT_FOLLOWER_ID, MotorType.kBrushless);
-
-    // set up differential drive class
-    drive = new DifferentialDrive(leftLeader, rightLeader);
-    drive.setDeadband(0);
 
     // Set can timeout. Because this project only sets parameters once on
     // construction, the timeout can be long without blocking robot operation. Code
@@ -91,12 +96,12 @@ public class DriveSubsystem extends SubsystemBase implements EncoderIO, GyroIO {
 
   @Override
   public void periodic() {
-        SmartDashboard.putNumber("Drive Right Position", getRightPosition());
-        SmartDashboard.putNumber("Drive Left Position", getLeftPosition());
-        SmartDashboard.putNumber("Drive Right Velocity", getRightVelocity());
-        SmartDashboard.putNumber("Drive Left Velocity", getLeftVelocity());
+    SmartDashboard.putNumber("Drive Right Position", getRightPosition());
+    SmartDashboard.putNumber("Drive Left Position", getLeftPosition());
+    SmartDashboard.putNumber("Drive Right Velocity", getRightVelocity());
+    SmartDashboard.putNumber("Drive Left Velocity", getLeftVelocity());
 
-        SmartDashboard.putNumber("Rotation 2d", getRotation2d().getDegrees());
+    SmartDashboard.putNumber("Rotation 2d", getRotation2d().getDegrees());
   }
 
   // Command factory to create command to drive the robot with joystick inputs.
@@ -140,7 +145,58 @@ public class DriveSubsystem extends SubsystemBase implements EncoderIO, GyroIO {
   }
 
   public void tankDrive(double l, double r) {
-    drive.tankDrive(l, r);
+    drive.tankDrive(l, r, false);
   }
 
+  ///////////////////////// SYSID STUFF
+  ///
+  ///
+  /// Declare with the specific Mut* types, initialize via Unit.mutable()
+  private final MutVoltage m_leftVoltage = Volts.mutable(0);
+  private final MutVoltage m_rightVoltage = Volts.mutable(0);
+  private final MutDistance m_leftDist = Meters.mutable(0);
+  private final MutDistance m_rightDist = Meters.mutable(0);
+  private final MutLinearVelocity m_leftVel = MetersPerSecond.mutable(0);
+  private final MutLinearVelocity m_rightVel = MetersPerSecond.mutable(0);
+  private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(), // default config, or customize ramp rate/timeout
+      new SysIdRoutine.Mechanism(
+          (voltage) -> {
+            leftLeader.setVoltage(voltage.in(Volts));
+            rightLeader.setVoltage(voltage.in(Volts));
+          },
+          (log) -> {
+            log.motor("drive-left")
+                .voltage(m_leftVoltage.mut_replace(
+                    leftLeader.getBusVoltage() * leftLeader.getAppliedOutput(), Volts))
+                .linearPosition(m_leftDist.mut_replace(
+                    getLeftPosition(), Meters))
+                .linearVelocity(m_leftVel.mut_replace(
+                    getLeftVelocity(), MetersPerSecond));
+
+            log.motor("drive-right")
+                .voltage(m_rightVoltage.mut_replace(
+                    rightLeader.getBusVoltage() * rightLeader.getAppliedOutput(), Volts))
+                .linearPosition(m_rightDist.mut_replace(
+                    getRightPosition(), Meters))
+                .linearVelocity(m_rightVel.mut_replace(
+                    getRightVelocity(), MetersPerSecond));
+          },
+          this));
+
+  public Command sysIdQuasistaticForward() {
+    return m_sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
+  }
+
+  public Command sysIdQuasistaticBackward() {
+    return m_sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
+  }
+
+  public Command sysIdDynamicForward() {
+    return m_sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward);
+  }
+
+  public Command sysIdDynamicBackward() {
+    return m_sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
+  }
 }

@@ -18,8 +18,8 @@ public class JoystickTankDriveCommand extends Command {
     private final SlewRateLimiter lLimiter = new SlewRateLimiter(DRIVE_FB_SLEW_LIMIT);
 
     public JoystickTankDriveCommand(DoubleSupplier lSpeed, DoubleSupplier rSpeed, DriveSubsystem driveSubsystem) {
-       this.lSpeedSupplier = lSpeed;
-       this.rSpeedSupplier = rSpeed;
+        this.lSpeedSupplier = lSpeed;
+        this.rSpeedSupplier = rSpeed;
         this.driveSubsystem = driveSubsystem;
         addRequirements(driveSubsystem);
     }
@@ -33,17 +33,21 @@ public class JoystickTankDriveCommand extends Command {
         double lSpeed = lSpeedSupplier.getAsDouble();
         double rSpeed = rSpeedSupplier.getAsDouble();
 
-        // apply scaling
-        lSpeed = lSpeed * DRIVE_SCALING;
-        rSpeed = rSpeed * DRIVE_SCALING;
+        // Clamp value
+        lSpeed = MathUtil.clamp(lSpeed, -1.0, 1.0);
+        rSpeed = MathUtil.clamp(rSpeed, -1.0, 1.0);
 
-        //apply expo
+        // Apply deadband
+        lSpeed = MathUtil.applyDeadband(lSpeed, DRIVE_DEADBAND);
+        rSpeed = MathUtil.applyDeadband(rSpeed, DRIVE_DEADBAND);
+
+        // apply expo
         lSpeed = MathUtil.copyDirectionPow(lSpeed, DRIVE_EXPO);
         rSpeed = MathUtil.copyDirectionPow(rSpeed, DRIVE_EXPO);
 
-         // Apply deadband
-        lSpeed = MathUtil.applyDeadband(lSpeed, DRIVE_DEADBAND);
-        rSpeed = MathUtil.applyDeadband(rSpeed, DRIVE_DEADBAND);
+        // apply scaling
+        lSpeed = lSpeed * DRIVE_SCALING;
+        rSpeed = rSpeed * DRIVE_SCALING;
 
         // Limit slew rates
         lSpeed = lLimiter.calculate(lSpeed);
