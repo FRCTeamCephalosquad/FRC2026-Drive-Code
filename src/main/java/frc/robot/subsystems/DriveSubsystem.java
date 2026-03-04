@@ -12,9 +12,12 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.MutDistance;
@@ -61,6 +64,8 @@ public class DriveSubsystem extends SubsystemBase implements EncoderIO, GyroIO {
   // Drive Info
   private DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(
       Distance.ofBaseUnits(DRIVE_WIDTH, Meters)); // TODO Measure This
+
+  private final AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
 
   public DriveSubsystem() {
 
@@ -134,7 +139,7 @@ public class DriveSubsystem extends SubsystemBase implements EncoderIO, GyroIO {
 
   @Override
   public Rotation2d getRotation2d() {
-    return new Rotation2d(0); // TODO
+        return new Rotation2d(Units.degreesToRadians(-gyro.getYaw()));
   }
 
   public DifferentialDriveKinematics getDifferentialDriveKinematics() {
