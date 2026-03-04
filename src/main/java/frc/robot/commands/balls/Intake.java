@@ -16,6 +16,7 @@ public class Intake extends Command {
   FuelSubsystem fuelSubsystem;
 
   public Intake(FuelSubsystem fuelSystem) {
+    SmartDashboard.putNumber("Launcher Intake RPM", LAUNCHER_INTAKE_RPM);
     addRequirements(fuelSystem);
     this.fuelSubsystem = fuelSystem;
   }
@@ -25,7 +26,7 @@ public class Intake extends Command {
   @Override
   public void initialize() {
     fuelSubsystem
-        .setIntakeLauncherRoller(SmartDashboard.getNumber("Intaking intake roller value", INTAKE_INTAKING_PERCENT));
+        .setLauncherRPM(SmartDashboard.getNumber("Launcher Intake RPM", LAUNCHER_INTAKE_RPM));
     fuelSubsystem.setFeederRoller(SmartDashboard.getNumber("Intaking feeder roller value", INDEXER_INTAKING_PERCENT));
   }
 
@@ -38,7 +39,7 @@ public class Intake extends Command {
   // Called once the command ends or is interrupted. Stop the rollers
   @Override
   public void end(boolean interrupted) {
-    fuelSubsystem.setIntakeLauncherRoller(0);
+    fuelSubsystem.setLauncherRPM(0);
     fuelSubsystem.setFeederRoller(0);
   }
 

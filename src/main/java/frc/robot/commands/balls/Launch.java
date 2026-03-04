@@ -16,6 +16,7 @@ public class Launch extends Command {
   FuelSubsystem fuelSubsystem;
 
   public Launch(FuelSubsystem fuelSystem) {
+     SmartDashboard.putNumber("Launcher Launch RPM", LAUNCHER_LAUNCH_RPM);
     addRequirements(fuelSystem);
     this.fuelSubsystem = fuelSystem;
   }
@@ -24,9 +25,8 @@ public class Launch extends Command {
   // appropriate values for intaking
   @Override
   public void initialize() {
-    fuelSubsystem
-        .setIntakeLauncherRoller(
-            SmartDashboard.getNumber("Launching launcher roller value", LAUNCHING_LAUNCHER_PERCENT));
+    fuelSubsystem.setLauncherRPM(
+        SmartDashboard.getNumber("Launcher Launch RPM", LAUNCHER_LAUNCH_RPM));
     fuelSubsystem.setFeederRoller(SmartDashboard.getNumber("Launching feeder roller value", INDEXER_LAUNCHING_PERCENT));
   }
 

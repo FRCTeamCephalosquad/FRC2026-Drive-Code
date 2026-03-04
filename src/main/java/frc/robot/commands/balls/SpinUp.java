@@ -16,6 +16,7 @@ public class SpinUp extends Command {
   FuelSubsystem fuelSubsystem;
 
   public SpinUp(FuelSubsystem fuelSystem) {
+    SmartDashboard.putNumber("Launcher Launch RPM", LAUNCHER_LAUNCH_RPM);
     addRequirements(fuelSystem);
     this.fuelSubsystem = fuelSystem;
   }
@@ -25,8 +26,8 @@ public class SpinUp extends Command {
   @Override
   public void initialize() {
     fuelSubsystem
-        .setIntakeLauncherRoller(
-            SmartDashboard.getNumber("Launching launcher roller value", LAUNCHING_LAUNCHER_PERCENT));
+        .setLauncherRPM(
+            SmartDashboard.getNumber("Launcher Launch RPM", LAUNCHER_LAUNCH_RPM));
     //fuelSubsystem.setFeederRoller(SmartDashboard.getNumber("Launching spin-up feeder value", INDEXER_SPIN_UP_PRE_LAUNCH_PERCENT));
   }
 

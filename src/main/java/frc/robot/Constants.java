@@ -44,11 +44,22 @@ public final class Constants {
     public static final double INDEXER_LAUNCHING_PERCENT = 0.6;
     public static final double INDEXER_SPIN_UP_PRE_LAUNCH_PERCENT = -0.5;
 
-    public static final double INTAKE_INTAKING_PERCENT = 0.6;
-    public static final double LAUNCHING_LAUNCHER_PERCENT = .85;
-    public static final double INTAKE_EJECT_PERCENT = -0.8;
-
     public static final double SPIN_UP_SECONDS = 0.75;
+
+    // Launcher PID gains
+    // Tuning order: get KFF close first (1 / NEO free-speed RPM),
+    // then nudge KP to eliminate steady-state error. KI and KD are
+    // rarely needed for a flywheel — leave them at 0 until you have a reason.
+    public static final double LAUNCHER_KP = 0.0001;
+    public static final double LAUNCHER_KI = 0.0;
+    public static final double LAUNCHER_KD = 0.0;
+    public static final double LAUNCHER_KFF = .0022; // 1 / NEO free-speed RPM
+
+    // Target launch speed and at-speed tolerance
+    public static final double LAUNCHER_LAUNCH_RPM = 4000; // tune to your shot distance
+    public static final double LAUNCHER_INTAKE_RPM = -3000;
+    public static final double LAUNCHER_EJECT_RPM = -4000;
+    public static final double LAUNCHER_RPM_TOLERANCE = 100; // ± RPM considered "at speed"
   }
 
   public static final class ClimbConstatns {
@@ -74,7 +85,7 @@ public final class Constants {
     public static final double ROTATION_SCALING = .2;
     public static final double DRIVE_DEADBAND = RobotDriveBase.kDefaultDeadband;
     public static final double DRIVE_EXPO = 2;
-    
+
     // Slew Limits. Lower is smoother, but more sluggish
     public static final double DRIVE_FB_SLEW_LIMIT = 2.0;
     public static final double DRIVE_ROTATE_SLEW_LIMIT = 2.0;

@@ -16,6 +16,7 @@ public class Eject extends Command {
   FuelSubsystem fuelSubsystem;
 
   public Eject(FuelSubsystem fuelSystem) {
+    SmartDashboard.putNumber("Launcher Eject RPM", LAUNCHER_EJECT_RPM);
     addRequirements(fuelSystem);
     this.fuelSubsystem = fuelSystem;
   }
@@ -25,8 +26,8 @@ public class Eject extends Command {
   @Override
   public void initialize() {
     fuelSubsystem
-        .setIntakeLauncherRoller(
-             SmartDashboard.getNumber("Eject intake roller value", INTAKE_EJECT_PERCENT));
+        .setLauncherRPM(
+             SmartDashboard.getNumber("Launcher Eject RPM", LAUNCHER_EJECT_RPM));
      fuelSubsystem.setFeederRoller(SmartDashboard.getNumber("Eject feeder roller value", INDEXER_LAUNCHING_PERCENT));
   }
 
@@ -39,7 +40,7 @@ public class Eject extends Command {
   // Called once the command ends or is interrupted. Stop the rollers
   @Override
   public void end(boolean interrupted) {
-    fuelSubsystem.setIntakeLauncherRoller(0);
+    fuelSubsystem.setLauncherRPM(0);
     fuelSubsystem.setFeederRoller(0);
   }
 
