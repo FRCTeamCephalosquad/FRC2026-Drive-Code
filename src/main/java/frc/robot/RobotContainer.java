@@ -62,12 +62,17 @@ public class RobotContainer {
    * Use this method to define your trigger->command mappings.
    */
   private void configureBindings() {
-
+/* 
+    driverController.a().whileTrue(driveSubsystem.sysIdQuasistaticForward());
+  driverController.b().whileTrue(driveSubsystem.sysIdQuasistaticBackward());
+  driverController.x().whileTrue(driveSubsystem.sysIdDynamicForward());
+  driverController.y().whileTrue(driveSubsystem.sysIdDynamicBackward());
+*/
     // Normal mode for pose subsystem
     pduSubsystem.setDefaultCommand(pduSubsystem.run(pduSubsystem::updateCurrent));
 
     // Drive Default
-    if (true) {
+    if (false) {
       driveSubsystem.setDefaultCommand(
           new JoystickArcadeDriveCommand(
               () -> -driverController.getLeftY(),
@@ -80,7 +85,7 @@ public class RobotContainer {
               () -> -driverController.getRightY(),
               driveSubsystem));
     }
-
+ 
     // Fuesl and Climber both default to stop
     fuelSubsystem.setDefaultCommand(fuelSubsystem.run(() -> fuelSubsystem.stop()));
     climberSubsystem.setDefaultCommand(climberSubsystem.run(() -> climberSubsystem.stop()));
@@ -98,6 +103,7 @@ public class RobotContainer {
 
     driverController.povDown().whileTrue(new ClimbDown(climberSubsystem));
     driverController.povUp().whileTrue(new ClimbUp(climberSubsystem));
+
   }
 
   /**

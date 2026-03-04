@@ -34,6 +34,8 @@ import frc.robot.subsystems.PoseSubsystem.GyroIO;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.DriveConstants.*;
 
@@ -122,12 +124,12 @@ public class DriveSubsystem extends SubsystemBase implements EncoderIO, GyroIO {
 
   @Override
   public double getLeftVelocity() {
-    return leftLeader.getEncoder().getVelocity() * ENCODER_RATIO;
+    return (leftLeader.getEncoder().getVelocity() * ENCODER_RATIO) / 60.0;
   }
 
   @Override
   public double getRightVelocity() {
-    return rightLeader.getEncoder().getVelocity() * ENCODER_RATIO;
+    return (rightLeader.getEncoder().getVelocity() * ENCODER_RATIO) / 60.0;
   }
 
   @Override
@@ -159,7 +161,7 @@ public class DriveSubsystem extends SubsystemBase implements EncoderIO, GyroIO {
   private final MutLinearVelocity m_leftVel = MetersPerSecond.mutable(0);
   private final MutLinearVelocity m_rightVel = MetersPerSecond.mutable(0);
   private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(), // default config, or customize ramp rate/timeout
+      new SysIdRoutine.Config(Volts.of(.4).per(Second),Volts.of(3), Seconds.of(10), null), // default config, or customize ramp rate/timeout
       new SysIdRoutine.Mechanism(
           (voltage) -> {
             leftLeader.setVoltage(voltage.in(Volts));
