@@ -71,6 +71,7 @@ public class RobotContainer {
     // Normal mode for pose subsystem
     pduSubsystem.setDefaultCommand(pduSubsystem.run(pduSubsystem::updateCurrent));
 
+    poseSubsystem.setDefaultCommand(poseSubsystem.run(poseSubsystem::update));
     // Drive Default
     if (false) {
       driveSubsystem.setDefaultCommand(

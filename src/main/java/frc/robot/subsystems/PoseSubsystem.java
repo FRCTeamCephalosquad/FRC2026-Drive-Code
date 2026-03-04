@@ -19,6 +19,11 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonPipelineResult;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Radians;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,8 +32,8 @@ public class PoseSubsystem extends SubsystemBase {
     // Camera configuration constants
         private static final String CAMERA_RIGHT_NAME = "Arducam_OV9281_1";
     private static final Transform3d CAMERA_RIGHT_TRANSFORM = new Transform3d(
-            new Translation3d(0.35, -0.218, 0.40),
-            new Rotation3d(0, 0, 0));
+            new Translation3d(Inches.of(-9).in(Meters), Inches.of(-8.5).in(Meters), .2),
+            new Rotation3d(0, Degrees.of(25).in(Radians), Degrees.of(-180).in(Radians)));
 
     private static final String CAMERA_LEFT_NAME = "Arducam_OV9281_2";
     private static final Transform3d CAMERA_LEFT_TRANSFORM = new Transform3d(
