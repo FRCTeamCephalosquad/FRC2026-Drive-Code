@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
 import static frc.robot.Constants.OperatorConstants.*;
 
 import frc.robot.commands.JoystickArcadeDriveCommand;
@@ -62,12 +64,12 @@ public class RobotContainer {
    * Use this method to define your trigger->command mappings.
    */
   private void configureBindings() {
-/* 
-    driverController.a().whileTrue(driveSubsystem.sysIdQuasistaticForward());
-  driverController.b().whileTrue(driveSubsystem.sysIdQuasistaticBackward());
-  driverController.x().whileTrue(driveSubsystem.sysIdDynamicForward());
-  driverController.y().whileTrue(driveSubsystem.sysIdDynamicBackward());
-*/
+    /*
+     * driverController.a().whileTrue(driveSubsystem.sysIdQuasistaticForward());
+     * driverController.b().whileTrue(driveSubsystem.sysIdQuasistaticBackward());
+     * driverController.x().whileTrue(driveSubsystem.sysIdDynamicForward());
+     * driverController.y().whileTrue(driveSubsystem.sysIdDynamicBackward());
+     */
     // Normal mode for pose subsystem
     pduSubsystem.setDefaultCommand(pduSubsystem.run(pduSubsystem::updateCurrent));
 
@@ -86,15 +88,15 @@ public class RobotContainer {
               () -> -driverController.getRightY(),
               driveSubsystem));
     }
- 
+
     // Fuesl and Climber both default to stop
     fuelSubsystem.setDefaultCommand(fuelSubsystem.run(() -> fuelSubsystem.stop()));
     climberSubsystem.setDefaultCommand(climberSubsystem.run(() -> climberSubsystem.stop()));
 
     // Test orientation code
-    // Translation2d blueTower = new Translation2d(0.01, 3.73);
-    // driverController.y().whileTrue(new OrientToPointCommand(driveSubsystem,
-    // poseSubsystem::getCurrentPose, blueTower));
+    Translation2d blueTower = new Translation2d(Inches.of(181.56).in(Meters), Inches.of(158.32).in(Meters));
+    operatorController.a().whileTrue(new OrientToPointCommand(driveSubsystem,
+        poseSubsystem::getCurrentPose, blueTower));
 
     // Some probably stupid operator commands
     // TODO operatorController.a().whileTrue(AUTO AIM);

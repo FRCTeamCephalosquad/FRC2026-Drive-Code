@@ -139,7 +139,8 @@ public class DriveSubsystem extends SubsystemBase implements EncoderIO, GyroIO {
 
   @Override
   public Rotation2d getRotation2d() {
-        return new Rotation2d(Units.degreesToRadians(-gyro.getYaw()));
+    double rawYaw = gyro.getYaw();
+    return new Rotation2d(Units.degreesToRadians(-rawYaw));
   }
 
   public DifferentialDriveKinematics getDifferentialDriveKinematics() {
@@ -166,7 +167,9 @@ public class DriveSubsystem extends SubsystemBase implements EncoderIO, GyroIO {
   private final MutLinearVelocity m_leftVel = MetersPerSecond.mutable(0);
   private final MutLinearVelocity m_rightVel = MetersPerSecond.mutable(0);
   private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(Volts.of(.4).per(Second),Volts.of(3), Seconds.of(10), null), // default config, or customize ramp rate/timeout
+      new SysIdRoutine.Config(Volts.of(.4).per(Second), Volts.of(3), Seconds.of(10), null), // default config, or
+                                                                                            // customize ramp
+                                                                                            // rate/timeout
       new SysIdRoutine.Mechanism(
           (voltage) -> {
             leftLeader.setVoltage(voltage.in(Volts));

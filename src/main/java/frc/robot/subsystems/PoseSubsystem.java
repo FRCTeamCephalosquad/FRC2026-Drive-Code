@@ -20,8 +20,6 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Radians;
 
 import java.util.ArrayList;
@@ -30,17 +28,16 @@ import java.util.Optional;
 
 public class PoseSubsystem extends SubsystemBase {
     // Camera configuration constants
-        private static final String CAMERA_RIGHT_NAME = "Arducam_OV9281_1";
-    private static final Transform3d CAMERA_RIGHT_TRANSFORM = new Transform3d(
-            new Translation3d(Inches.of(-9).in(Meters), Inches.of(-8.5).in(Meters), .2),
+    private static final String CAMERA_FORWARD = "Arducam_OV9281_1";
+
+    private static final Transform3d CAMERA_FORWARD_TRANSFORM = new Transform3d(
+            new Translation3d(0.35, 0.27, 0.45),
+            new Rotation3d(0, 0, 0));
+
+    private static final String CAMERA_REAR_NAME = "Arducam_OV9281_2";
+    private static final Transform3d CAMERA_REAR_TRANSFORM = new Transform3d(
+            new Translation3d(-.28, .20, .2),
             new Rotation3d(0, Degrees.of(25).in(Radians), Degrees.of(-180).in(Radians)));
-
-    private static final String CAMERA_LEFT_NAME = "Arducam_OV9281_2";
-    private static final Transform3d CAMERA_LEFT_TRANSFORM = new Transform3d(
-            new Translation3d(0.35, 0.218, 0.40),
-            new Rotation3d(0, 0,0));
-
-
 
     private final DifferentialDrivePoseEstimator poseEstimator;
 
@@ -74,7 +71,7 @@ public class PoseSubsystem extends SubsystemBase {
     private static final double VISION_Y_STD_DEV = 0.7;
     private static final double VISION_THETA_STD_DEV = 0.9;
 
-    public PoseSubsystem( DriveSubsystem ds) {
+    public PoseSubsystem(DriveSubsystem ds) {
         this(ds.getDifferentialDriveKinematics(), ds, ds);
     }
 
@@ -101,8 +98,8 @@ public class PoseSubsystem extends SubsystemBase {
 
         // Initialize vision sources
         visionSources = new ArrayList<>();
-        visionSources.add(new VisionSource(CAMERA_LEFT_NAME, CAMERA_LEFT_TRANSFORM));
-        visionSources.add(new VisionSource(CAMERA_RIGHT_NAME, CAMERA_RIGHT_TRANSFORM));
+        visionSources.add(new VisionSource(CAMERA_REAR_NAME, CAMERA_REAR_TRANSFORM));
+        visionSources.add(new VisionSource(CAMERA_FORWARD, CAMERA_FORWARD_TRANSFORM));
 
         // Field visualization
         field = new Field2d();
