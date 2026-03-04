@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.subsystems.DriveSubsystem;
@@ -28,7 +29,7 @@ public class OrientToPointCommand extends OrientationCommandBase {
         // Calculate angle to target point
         double deltaX = targetPoint.getX() - currentPose.getX();
         double deltaY = targetPoint.getY() - currentPose.getY();
-        return Math.toDegrees(Math.atan2(deltaY, deltaX));
+        return Math.toDegrees(MathUtil.angleModulus(Math.atan2(deltaY, deltaX)-Math.PI));
     }
     
     @Override
