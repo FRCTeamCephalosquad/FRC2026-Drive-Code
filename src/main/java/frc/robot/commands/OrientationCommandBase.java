@@ -16,7 +16,7 @@ import frc.robot.subsystems.DriveSubsystem;
 public abstract class OrientationCommandBase extends Command {
     protected final DriveSubsystem drive;
     protected final Supplier<Pose2d> poseEstimator;
-    protected PIDController rotationController;
+    protected final PIDController rotationController;
 
     // Rotation PID constants - tune these for your robot
     protected static final double ROTATION_KP = 0.02;
@@ -35,50 +35,42 @@ public abstract class OrientationCommandBase extends Command {
         SmartDashboard.putNumber("Orient kD", ROTATION_KD);
 
         // Set up rotation PID controller
-        createRotationPID();
+        rotationController = new PIDController(0, 0, 0);
+        rotationController.enableContinuousInput(-180, 180);
+        rotationController.setTolerance(ANGLE_TOLERANCE_DEGREES);
 
         addRequirements(drive);
     }
+    
+    @Override
+    public void initialize() {
+        double kP = SmartDashboard.getNumber("Orient kP", ROTATION_KP);
+        double kI = SmartDashboard.getNumber("Orient kI", ROTATION_KI);
+        double kD = SmartDashboard.getNumber("Orient kD", ROTATION_KD);
+        rotationController.setP(kP);
+        rotationController.setI(kI);
+        rotationController.setD(kD);
+    }
 
     /**
-     * Subclasses must implement this to provide the target angle in degrees.
-     * 
      * @return Target angle in degrees (field-relative)
      */
     protected abstract double getTargetAngle();
 
     /**
-     * Subclasses can override this to provide forward/backward motion.
-     * 
      * @return Forward speed [-1.0, 1.0], default is 0 (rotation only)
      */
     protected double getForwardSpeed() {
         return 0;
     }
 
-    @Override
-    public void initialize() {
-        createRotationPID();
-    }
-
     /**
-     * Subclasses can override this to customize telemetry prefix.
-     * 
      * @return Telemetry prefix for SmartDashboard keys
      */
     protected String getTelemetryPrefix() {
         return this.getClass().getSimpleName();
     }
 
-    public void createRotationPID() {
-        double kP = SmartDashboard.getNumber("Orient kP", ROTATION_KP);
-        double kI = SmartDashboard.getNumber("Orient kI", ROTATION_KI);
-        double kD = SmartDashboard.getNumber("Orient kD", ROTATION_KD);
-
-        rotationController = new PIDController(kP, kI, kD);
-        rotationController.enableContinuousInput(-180, 180);
-        rotationController.setTolerance(ANGLE_TOLERANCE_DEGREES);
-    }
 
     @Override
     public void execute() {

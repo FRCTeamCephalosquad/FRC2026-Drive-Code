@@ -31,12 +31,12 @@ public class PoseSubsystem extends SubsystemBase {
     private static final String CAMERA_FORWARD = "Arducam_OV9281_1";
 
     private static final Transform3d CAMERA_FORWARD_TRANSFORM = new Transform3d(
-            new Translation3d(0.35, 0.27, 0.45),
+            new Translation3d(0.35, -0.27, 0.45),
             new Rotation3d(0, 0, 0));
 
     private static final String CAMERA_REAR_NAME = "Arducam_OV9281_2";
     private static final Transform3d CAMERA_REAR_TRANSFORM = new Transform3d(
-            new Translation3d(-.28, .20, .2),
+            new Translation3d(-.28, -.20, .2),
             new Rotation3d(0, Degrees.of(25).in(Radians), Degrees.of(-180).in(Radians)));
 
     private final DifferentialDrivePoseEstimator poseEstimator;

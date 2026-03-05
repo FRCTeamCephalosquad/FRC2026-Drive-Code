@@ -16,6 +16,7 @@ import static frc.robot.Constants.OperatorConstants.*;
 
 import frc.robot.commands.JoystickArcadeDriveCommand;
 import frc.robot.commands.JoystickTankDriveCommand;
+import frc.robot.commands.OrientToPointAndDistanceCommand;
 import frc.robot.commands.OrientToPointCommand;
 import frc.robot.commands.balls.Eject;
 import frc.robot.commands.balls.Intake;
@@ -95,8 +96,8 @@ public class RobotContainer {
 
     // Test orientation code
     Translation2d blueTower = new Translation2d(Inches.of(181.56).in(Meters), Inches.of(158.32).in(Meters));
-    operatorController.a().whileTrue(new OrientToPointCommand(driveSubsystem,
-        poseSubsystem::getCurrentPose, blueTower));
+    operatorController.a().whileTrue(new OrientToPointAndDistanceCommand(driveSubsystem,
+        poseSubsystem::getCurrentPose, blueTower, 2));
 
     // Some probably stupid operator commands
     // TODO operatorController.a().whileTrue(AUTO AIM);

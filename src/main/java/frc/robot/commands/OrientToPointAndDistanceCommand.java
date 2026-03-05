@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -20,7 +21,7 @@ public class OrientToPointAndDistanceCommand extends OrientationCommandBase {
     private final Translation2d targetPoint;
     private final double targetDistanceMeters;
     private final PIDController distanceController;
-    
+
     // Distance PID constants - tune these for your robot
     private static final double DISTANCE_KP = 0.5;
     private static final double DISTANCE_KI = 0.0;
@@ -28,10 +29,10 @@ public class OrientToPointAndDistanceCommand extends OrientationCommandBase {
     private static final double DISTANCE_TOLERANCE_METERS = 0.1;
     private static final double MAX_FORWARD_SPEED = 0.2;
     private static final double MIN_FORWARD_SPEED = 0.02; // Deadband
-    
+
     // Angle threshold to prioritize orientation over distance correction
     private static final double LARGE_ANGLE_ERROR_THRESHOLD = 15.0; // degrees
-    
+
     public OrientToPointAndDistanceCommand(
             DriveSubsystem drive,
             Supplier<Pose2d> poseEstimator,
@@ -40,70 +41,86 @@ public class OrientToPointAndDistanceCommand extends OrientationCommandBase {
         super(drive, poseEstimator);
         this.targetPoint = targetPoint;
         this.targetDistanceMeters = targetDistanceMeters;
-        
+
+        SmartDashboard.putNumber("Distance kP", DISTANCE_KP);
+        SmartDashboard.putNumber("Distance kI", DISTANCE_KI);
+        SmartDashboard.putNumber("Distance kD", DISTANCE_KD);
+
         // Set up distance PID controller
-        distanceController = new PIDController(DISTANCE_KP, DISTANCE_KI, DISTANCE_KD);
+        distanceController = new PIDController(0, 0, 0);
         distanceController.setTolerance(DISTANCE_TOLERANCE_METERS);
     }
-    
+
+    @Override
+    public void initialize() {
+        super.initialize();
+        double kP = SmartDashboard.getNumber("Distance kP", DISTANCE_KP);
+        double kI = SmartDashboard.getNumber("Distance kI", DISTANCE_KI);
+        double kD = SmartDashboard.getNumber("Distance kD", DISTANCE_KD);
+        distanceController.setP(kP);
+        distanceController.setI(kI);
+        distanceController.setD(kD);
+    }
+
     @Override
     protected double getTargetAngle() {
         Pose2d currentPose = poseEstimator.get();
-        
+
         // Calculate angle to target point
         double deltaX = targetPoint.getX() - currentPose.getX();
         double deltaY = targetPoint.getY() - currentPose.getY();
-        return Math.toDegrees(Math.atan2(deltaY, deltaX));
+        return Math.toDegrees(MathUtil.angleModulus(Math.atan2(deltaY, deltaX) - Math.PI));
     }
-    
+
     @Override
     protected double getForwardSpeed() {
         Pose2d currentPose = poseEstimator.get();
-        
+
         // Calculate current distance to target
         double currentDistance = currentPose.getTranslation().getDistance(targetPoint);
-        
+
         // Calculate angle error to decide if we should prioritize orientation
         double currentHeading = currentPose.getRotation().getDegrees();
         double targetAngle = getTargetAngle();
         double angleError = Math.abs(targetAngle - currentHeading);
-        
+
         // Normalize angle error to [0, 180]
         if (angleError > 180) {
             angleError = 360 - angleError;
         }
-        
+
         // If we're badly misaligned, don't drive forward/backward yet
         if (angleError > LARGE_ANGLE_ERROR_THRESHOLD) {
             SmartDashboard.putBoolean(getTelemetryPrefix() + "/PrioritizingOrientation", true);
             return 0;
         }
-        
+
         SmartDashboard.putBoolean(getTelemetryPrefix() + "/PrioritizingOrientation", false);
-        
+
         // Calculate forward/backward speed to maintain distance
         // Note: PID calculates (measurement - setpoint), so if we're too far,
-        // it gives positive output (drive forward). If too close, negative (drive backward).
+        // it gives positive output (drive forward). If too close, negative (drive
+        // backward).
         double forwardSpeed = distanceController.calculate(currentDistance, targetDistanceMeters);
-        
+
         // Clamp forward speed
-        forwardSpeed = Math.max(-MAX_FORWARD_SPEED, 
-                                Math.min(MAX_FORWARD_SPEED, forwardSpeed));
-        
+        forwardSpeed = Math.max(-MAX_FORWARD_SPEED,
+                Math.min(MAX_FORWARD_SPEED, forwardSpeed));
+
         // Apply deadband
         if (Math.abs(forwardSpeed) < MIN_FORWARD_SPEED) {
             forwardSpeed = 0;
         }
-        
+
         // Additional telemetry
         SmartDashboard.putNumber(getTelemetryPrefix() + "/CurrentDistance", currentDistance);
         SmartDashboard.putNumber(getTelemetryPrefix() + "/TargetDistance", targetDistanceMeters);
         SmartDashboard.putNumber(getTelemetryPrefix() + "/DistanceError", currentDistance - targetDistanceMeters);
         SmartDashboard.putBoolean(getTelemetryPrefix() + "/AtDistanceSetpoint", distanceController.atSetpoint());
-        
-        return -forwardSpeed;
+
+        return forwardSpeed;
     }
-    
+
     @Override
     public boolean isFinished() {
         return false; // Runs until cancelled
