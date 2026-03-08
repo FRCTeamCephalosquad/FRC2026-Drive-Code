@@ -25,6 +25,7 @@ import frc.robot.commands.climb.ClimbDown;
 import frc.robot.commands.climb.ClimbUp;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FuelSubsystem;
+import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.PDUSubsystem;
 import frc.robot.subsystems.PoseSubsystem;
@@ -37,6 +38,7 @@ public class RobotContainer {
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   private final PDUSubsystem pduSubsystem = new PDUSubsystem();
   private final PoseSubsystem poseSubsystem = new PoseSubsystem(driveSubsystem);
+  private final HopperSubsystem hopperSubsystem = new  HopperSubsystem();
 
   // CONTROLLERS
   private final CommandXboxController driverController = new CommandXboxController(
@@ -107,6 +109,9 @@ public class RobotContainer {
 
     driverController.povDown().whileTrue(new ClimbDown(climberSubsystem));
     driverController.povUp().whileTrue(new ClimbUp(climberSubsystem));
+
+    driverController.povLeft().whileTrue(hopperSubsystem.lowerCommand());
+    driverController.povRight().whileTrue(hopperSubsystem.raiseCommand());
 
   }
 

@@ -57,7 +57,7 @@ public final class Constants {
 
     // Target launch speed and at-speed tolerance
     public static final double LAUNCHER_LAUNCH_RPM = 4000; // tune to your shot distance
-    public static final double LAUNCHER_INTAKE_RPM = -3000;
+    public static final double LAUNCHER_INTAKE_RPM = 3000;
     public static final double LAUNCHER_EJECT_RPM = -4000;
     public static final double LAUNCHER_RPM_TOLERANCE = 100; // ± RPM considered "at speed"
   }

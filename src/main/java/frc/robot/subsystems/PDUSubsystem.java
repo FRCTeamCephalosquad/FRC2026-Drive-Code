@@ -19,6 +19,17 @@ public class PDUSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Drive R2 Current", pdu.getCurrent(8));
         SmartDashboard.putNumber("Drive L1 Current", pdu.getCurrent(18));
         SmartDashboard.putNumber("Drive L2 Current", pdu.getCurrent(19));
+
+        SmartDashboard.putNumber("Launcher Left", pdu.getCurrent(6));
+        SmartDashboard.putNumber("Launcher Right", pdu.getCurrent(7));
+        
+        //These two might be swapped
+        SmartDashboard.putNumber("Indexer", pdu.getCurrent(5));
+        SmartDashboard.putNumber("Climber", pdu.getCurrent(7));
+
+        //probably
+        SmartDashboard.putNumber("Hopper", pdu.getCurrent(3));
+
     }
 
 }

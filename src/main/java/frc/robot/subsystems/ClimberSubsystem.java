@@ -5,14 +5,18 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static frc.robot.Constants.ClimbConstatns.*;
 
 public class ClimberSubsystem extends SubsystemBase {
   private final SparkMax climberMotor;
+ // private final CANcoder climbEncoder = new CANcoder(15);
 
   /** Creates a new CANBallSubsystem. */
   @SuppressWarnings("removal")
@@ -40,6 +44,6 @@ public class ClimberSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+  // SmartDashboard.putNumber("Climber/Encoder", climbEncoder.getAbsolutePosition().getValue().in(Degrees));
   }
 }
