@@ -15,6 +15,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class HopperSubsystem extends SubsystemBase {
     private final SparkMax motor;
 
+    private static final double DOWN_LIMIT = 210;
+    private static final double UP_LIMIT = 0;
+
     @SuppressWarnings("removal")
     public HopperSubsystem() {
         // create brushed motors for each of the motors on the launcher mechanism
@@ -33,16 +36,17 @@ public class HopperSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Hopper Position", motor.getEncoder().getPosition());
     }
 
+
     public Command lowerCommand(){
         return Commands.runEnd(()->{
             motor.set(.75);
-        }, motor::stopMotor, this);
+        }, motor::stopMotor, this).until(() ->motor.getEncoder().getPosition() > DOWN_LIMIT );
     }
 
     public Command raiseCommand(){
         return Commands.runEnd(()->{
             motor.set(-.75);
-        }, motor::stopMotor, this);
+        }, motor::stopMotor, this).until(() ->motor.getEncoder().getPosition() < UP_LIMIT );
     }
 
 }

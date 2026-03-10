@@ -56,7 +56,7 @@ public final class Constants {
     public static final double LAUNCHER_KFF = .0022; // 1 / NEO free-speed RPM
 
     // Target launch speed and at-speed tolerance
-    public static final double LAUNCHER_LAUNCH_RPM = 4000; // tune to your shot distance
+    public static final double LAUNCHER_LAUNCH_RPM = 4500; // tune to your shot distance
     public static final double LAUNCHER_INTAKE_RPM = 3000;
     public static final double LAUNCHER_EJECT_RPM = -4000;
     public static final double LAUNCHER_RPM_TOLERANCE = 100; // ± RPM considered "at speed"
@@ -81,7 +81,7 @@ public final class Constants {
 
     // This value is multiplied by the joystick value when driving the robot to
     // help avoid driving and turning too fast and being difficult to control
-    public static final double DRIVE_SCALING = .2;
+    public static final double DRIVE_SCALING = .3;
     public static final double ROTATION_SCALING = .2;
     public static final double DRIVE_DEADBAND = RobotDriveBase.kDefaultDeadband;
     public static final double DRIVE_EXPO = 2;

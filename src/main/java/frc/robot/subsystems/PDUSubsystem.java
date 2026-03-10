@@ -9,7 +9,8 @@ public class PDUSubsystem extends SubsystemBase {
 
     PowerDistribution pdu = new PowerDistribution(1, ModuleType.kRev);
 
-    public void updateCurrent() {
+    @Override
+    public void periodic() {
 
         // Send power information
         SmartDashboard.putNumber("Voltage", pdu.getVoltage());
@@ -22,12 +23,12 @@ public class PDUSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("Launcher Left", pdu.getCurrent(6));
         SmartDashboard.putNumber("Launcher Right", pdu.getCurrent(4));
-        
-        //These two might be swapped
+
+        // These two might be swapped
         SmartDashboard.putNumber("Indexer", pdu.getCurrent(5));
         SmartDashboard.putNumber("Climber", pdu.getCurrent(7));
 
-        //probably
+        // probably
         SmartDashboard.putNumber("Hopper", pdu.getCurrent(3));
 
     }

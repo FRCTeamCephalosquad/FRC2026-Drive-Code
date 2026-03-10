@@ -27,7 +27,6 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FuelSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.subsystems.PDUSubsystem;
 import frc.robot.subsystems.PoseSubsystem;
 
 public class RobotContainer {
@@ -36,9 +35,8 @@ public class RobotContainer {
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
   private final FuelSubsystem fuelSubsystem = new FuelSubsystem();
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
-  private final PDUSubsystem pduSubsystem = new PDUSubsystem();
   private final PoseSubsystem poseSubsystem = new PoseSubsystem(driveSubsystem);
-  private final HopperSubsystem hopperSubsystem = new  HopperSubsystem();
+  private final HopperSubsystem hopperSubsystem = new HopperSubsystem();
 
   // CONTROLLERS
   private final CommandXboxController driverController = new CommandXboxController(
@@ -73,10 +71,7 @@ public class RobotContainer {
      * driverController.x().whileTrue(driveSubsystem.sysIdDynamicForward());
      * driverController.y().whileTrue(driveSubsystem.sysIdDynamicBackward());
      */
-    // Normal mode for pose subsystem
-    pduSubsystem.setDefaultCommand(pduSubsystem.run(pduSubsystem::updateCurrent));
 
-    poseSubsystem.setDefaultCommand(poseSubsystem.run(poseSubsystem::update));
     // Drive Default
     if (false) {
       driveSubsystem.setDefaultCommand(
@@ -98,8 +93,9 @@ public class RobotContainer {
 
     // Test orientation code
     Translation2d blueTower = new Translation2d(Inches.of(181.56).in(Meters), Inches.of(158.32).in(Meters));
+    Translation2d redTower = new Translation2d(Inches.of(470).in(Meters), Inches.of(158.32).in(Meters));
     operatorController.a().whileTrue(new OrientToPointAndDistanceCommand(driveSubsystem,
-        poseSubsystem::getCurrentPose, blueTower, 2));
+        poseSubsystem::getCurrentPose, redTower, 2.25));
 
     // Some probably stupid operator commands
     // TODO operatorController.a().whileTrue(AUTO AIM);
@@ -110,8 +106,8 @@ public class RobotContainer {
     driverController.povDown().whileTrue(new ClimbDown(climberSubsystem));
     driverController.povUp().whileTrue(new ClimbUp(climberSubsystem));
 
-    driverController.povLeft().whileTrue(hopperSubsystem.lowerCommand());
-    driverController.povRight().whileTrue(hopperSubsystem.raiseCommand());
+    operatorController.povDown().whileTrue(hopperSubsystem.lowerCommand());
+    operatorController.povUp().whileTrue(hopperSubsystem.raiseCommand());
 
   }
 
