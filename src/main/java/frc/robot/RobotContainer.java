@@ -4,25 +4,20 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
 import static frc.robot.Constants.OperatorConstants.*;
 
-import frc.robot.commands.JoystickArcadeDriveCommand;
-import frc.robot.commands.JoystickTankDriveCommand;
-import frc.robot.commands.OrientToPointAndDistanceCommand;
-import frc.robot.commands.OrientToPointCommand;
+import frc.robot.commands.AutoAimCommand;
 import frc.robot.commands.balls.Eject;
 import frc.robot.commands.balls.Intake;
 import frc.robot.commands.balls.LaunchSequence;
 import frc.robot.commands.climb.ClimbDown;
 import frc.robot.commands.climb.ClimbUp;
+import frc.robot.commands.drive.JoystickArcadeDriveCommand;
+import frc.robot.commands.drive.JoystickTankDriveCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FuelSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
@@ -92,10 +87,8 @@ public class RobotContainer {
     climberSubsystem.setDefaultCommand(climberSubsystem.run(() -> climberSubsystem.stop()));
 
     // Test orientation code
-    Translation2d blueTower = new Translation2d(Inches.of(181.56).in(Meters), Inches.of(158.32).in(Meters));
-    Translation2d redTower = new Translation2d(Inches.of(470).in(Meters), Inches.of(158.32).in(Meters));
-    operatorController.a().whileTrue(new OrientToPointAndDistanceCommand(driveSubsystem,
-        poseSubsystem::getCurrentPose, redTower, 2.25));
+    operatorController.a().whileTrue(new AutoAimCommand(driveSubsystem,
+        poseSubsystem::getCurrentPose));
 
     // Some probably stupid operator commands
     // TODO operatorController.a().whileTrue(AUTO AIM);
