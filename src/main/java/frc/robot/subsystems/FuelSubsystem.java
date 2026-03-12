@@ -20,16 +20,21 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.FuelConstants.*;
 
 public class FuelSubsystem extends SubsystemBase {
-  private final SparkMax LeftIntakeLauncher;
+
+  private final SparkMaxConfig leaderConfig;
+  private double currentKP = LAUNCHER_KP;
+  private double currentKI = LAUNCHER_KI;
+  private double currentKD = LAUNCHER_KD;
+  private double currentKFF = LAUNCHER_KFF;
   private final SparkMax RightIntakeLauncher; // Leader
+  private final SparkMax LeftIntakeLauncher;
+
   private final SparkMax Indexer;
 
   private final SparkClosedLoopController launcherPID;
   private final RelativeEncoder launcherEncoder;
 
   private double targetRPM = 0.0;
-
-
 
   @SuppressWarnings("removal")
   public FuelSubsystem() {
@@ -43,7 +48,7 @@ public class FuelSubsystem extends SubsystemBase {
     Indexer.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     // --- Right (leader) launcher config with velocity PID ---
-    SparkMaxConfig leaderConfig = new SparkMaxConfig();
+    leaderConfig = new SparkMaxConfig();
     leaderConfig
         .smartCurrentLimit(LAUNCHER_MOTOR_CURRENT_LIMIT)
         .voltageCompensation(12)
@@ -83,7 +88,7 @@ public class FuelSubsystem extends SubsystemBase {
   @SuppressWarnings("removal")
   public void setLauncherRPM(double rpm) {
     updatePIDGains();
-    
+
     targetRPM = rpm;
     if (rpm == 0) {
       RightIntakeLauncher.set(0); // Coast to stop instead of holding 0 RPM
@@ -119,17 +124,17 @@ public class FuelSubsystem extends SubsystemBase {
     double kD = SmartDashboard.getNumber("Launcher kD", LAUNCHER_KD);
     double kFF = SmartDashboard.getNumber("Launcher kFF", LAUNCHER_KFF);
 
-    SparkMaxConfig updatedConfig = new SparkMaxConfig();
-    updatedConfig.closedLoop
-        .p(kP)
-        .i(kI)
-        .d(kD)
-        .velocityFF(kFF);
+    if (kP == currentKP && kI == currentKI && kD == currentKD && kFF == currentKFF) {
+      return;
+    }
 
-    RightIntakeLauncher.configure(
-        updatedConfig,
-        ResetMode.kNoResetSafeParameters,
-        PersistMode.kNoPersistParameters);
+    currentKP = kP;
+    currentKI = kI;
+    currentKD = kD;
+    currentKFF = kFF;
+
+    leaderConfig.closedLoop.p(kP).i(kI).d(kD).velocityFF(kFF);
+    RightIntakeLauncher.configure(leaderConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
   public void setFeederRoller(double power) {
