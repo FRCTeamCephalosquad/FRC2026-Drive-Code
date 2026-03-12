@@ -17,9 +17,8 @@ import frc.robot.subsystems.DriveSubsystem;
  * If the robot gets knocked around, it will reorient itself to the point
  * and adjust distance as needed.
  */
-public class OrientToPointAndDistanceCommand extends OrientationCommandBase {
-    private final Translation2d targetPoint;
-    private final double targetDistanceMeters;
+public abstract class OrientToPointAndDistanceCommand extends OrientationCommandBase {
+
     private final PIDController distanceController;
 
     // Distance PID constants - tune these for your robot
@@ -35,12 +34,9 @@ public class OrientToPointAndDistanceCommand extends OrientationCommandBase {
 
     public OrientToPointAndDistanceCommand(
             DriveSubsystem drive,
-            Supplier<Pose2d> poseEstimator,
-            Translation2d targetPoint,
-            double targetDistanceMeters) {
+            Supplier<Pose2d> poseEstimator) {
         super(drive, poseEstimator);
-        this.targetPoint = targetPoint;
-        this.targetDistanceMeters = targetDistanceMeters;
+
 
         SmartDashboard.putNumber("Distance kP", DISTANCE_KP);
         SmartDashboard.putNumber("Distance kI", DISTANCE_KI);
@@ -50,6 +46,10 @@ public class OrientToPointAndDistanceCommand extends OrientationCommandBase {
         distanceController = new PIDController(0, 0, 0);
         distanceController.setTolerance(DISTANCE_TOLERANCE_METERS);
     }
+
+    
+    public abstract Translation2d getTarget();
+    public abstract double getDistance();
 
     @Override
     public void initialize() {
@@ -67,8 +67,8 @@ public class OrientToPointAndDistanceCommand extends OrientationCommandBase {
         Pose2d currentPose = poseEstimator.get();
 
         // Calculate angle to target point
-        double deltaX = targetPoint.getX() - currentPose.getX();
-        double deltaY = targetPoint.getY() - currentPose.getY();
+        double deltaX = getTarget().getX() - currentPose.getX();
+        double deltaY = getTarget().getY() - currentPose.getY();
         return Math.toDegrees(MathUtil.angleModulus(Math.atan2(deltaY, deltaX) - Math.PI));
     }
 
@@ -77,7 +77,7 @@ public class OrientToPointAndDistanceCommand extends OrientationCommandBase {
         Pose2d currentPose = poseEstimator.get();
 
         // Calculate current distance to target
-        double currentDistance = currentPose.getTranslation().getDistance(targetPoint);
+        double currentDistance = currentPose.getTranslation().getDistance(getTarget());
 
         // Calculate angle error to decide if we should prioritize orientation
         double currentHeading = currentPose.getRotation().getDegrees();
@@ -101,7 +101,7 @@ public class OrientToPointAndDistanceCommand extends OrientationCommandBase {
         // Note: PID calculates (measurement - setpoint), so if we're too far,
         // it gives positive output (drive forward). If too close, negative (drive
         // backward).
-        double forwardSpeed = distanceController.calculate(currentDistance, targetDistanceMeters);
+        double forwardSpeed = distanceController.calculate(currentDistance, getDistance());
 
         // Clamp forward speed
         forwardSpeed = Math.max(-MAX_FORWARD_SPEED,
@@ -114,8 +114,8 @@ public class OrientToPointAndDistanceCommand extends OrientationCommandBase {
 
         // Additional telemetry
         SmartDashboard.putNumber(getTelemetryPrefix() + "/CurrentDistance", currentDistance);
-        SmartDashboard.putNumber(getTelemetryPrefix() + "/TargetDistance", targetDistanceMeters);
-        SmartDashboard.putNumber(getTelemetryPrefix() + "/DistanceError", currentDistance - targetDistanceMeters);
+        SmartDashboard.putNumber(getTelemetryPrefix() + "/TargetDistance", getDistance());
+        SmartDashboard.putNumber(getTelemetryPrefix() + "/DistanceError", currentDistance - getDistance());
         SmartDashboard.putBoolean(getTelemetryPrefix() + "/AtDistanceSetpoint", distanceController.atSetpoint());
 
         return forwardSpeed;

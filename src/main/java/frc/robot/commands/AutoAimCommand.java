@@ -3,6 +3,7 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
+import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -24,16 +25,23 @@ public class AutoAimCommand extends OrientToPointAndDistanceCommand {
 
     public AutoAimCommand(DriveSubsystem drive,
             Supplier<Pose2d> poseEstimator) {
-        super(drive, poseEstimator, getScoringHub(), SmartDashboard.getNumber("Auto Aim Distance", AUTO_AIM_DISTANCE));
+        super(drive, poseEstimator);
     }
 
-    private static Translation2d getScoringHub() {
-        Alliance alliance = DriverStation.getAlliance().orElseThrow();
+    @Override
+    public Translation2d getTarget() {
+        Alliance alliance = DriverStation.getAlliance().orElseThrow(
+                () -> new NoSuchElementException("Alliance not available in Auto Aim!"));
         if (alliance == Alliance.Blue) {
             return blueTower;
         } else {
             return redTower;
         }
+    }
+
+    @Override
+    public double getDistance() {
+        return SmartDashboard.getNumber("Auto Aim Distance", AUTO_AIM_DISTANCE);
     }
 
 }
