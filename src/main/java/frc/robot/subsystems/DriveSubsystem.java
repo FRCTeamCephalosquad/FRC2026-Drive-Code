@@ -65,7 +65,7 @@ public class DriveSubsystem extends SubsystemBase implements EncoderIO, GyroIO {
   private DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(
       Distance.ofBaseUnits(DRIVE_WIDTH, Meters)); // TODO Measure This
 
-  private final AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
+  private final AHRS gyro = new AHRS(NavXComType.kUSB1);
 
   public DriveSubsystem() {
 

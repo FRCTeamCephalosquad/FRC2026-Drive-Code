@@ -22,9 +22,11 @@ import frc.robot.commands.climb.ClimbDown;
 import frc.robot.commands.climb.ClimbUp;
 import frc.robot.commands.drive.JoystickArcadeDriveCommand;
 import frc.robot.commands.drive.JoystickTankDriveCommand;
+import frc.robot.commands.drive.OrientInDirectionCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FuelSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
+import frc.robot.subsystems.PDUSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.PoseSubsystem;
 
@@ -36,6 +38,7 @@ public class RobotContainer {
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   private final PoseSubsystem poseSubsystem = new PoseSubsystem(driveSubsystem);
   private final HopperSubsystem hopperSubsystem = new HopperSubsystem();
+  private final PDUSubsystem pduSubsystem = new PDUSubsystem();
 
   // CONTROLLERS
   private final CommandXboxController driverController = new CommandXboxController(
@@ -95,8 +98,17 @@ public class RobotContainer {
     operatorController.rightTrigger().whileTrue(new LaunchSequence(fuelSubsystem));
     operatorController.start().whileTrue(new Eject(fuelSubsystem));
 
-    driverController.povDown().whileTrue(new ClimbDown(climberSubsystem));
-    driverController.povUp().whileTrue(new ClimbUp(climberSubsystem));
+    //driverController.povDown().whileTrue(new ClimbDown(climberSubsystem));
+    //driverController.povUp().whileTrue(new ClimbUp(climberSubsystem));
+
+    driverController.povUp()
+        .whileTrue(new OrientInDirectionCommand(driveSubsystem, poseSubsystem::getCurrentPose, 0));
+    driverController.povLeft()
+        .whileTrue(new OrientInDirectionCommand(driveSubsystem, poseSubsystem::getCurrentPose, 90));
+    driverController.povDown()
+        .whileTrue(new OrientInDirectionCommand(driveSubsystem, poseSubsystem::getCurrentPose, 180));
+    driverController.povRight()
+        .whileTrue(new OrientInDirectionCommand(driveSubsystem, poseSubsystem::getCurrentPose, 270));
 
     operatorController.povDown().whileTrue(hopperSubsystem.lowerCommand());
     operatorController.povUp().whileTrue(hopperSubsystem.raiseCommand());

@@ -26,7 +26,7 @@ public abstract class OrientationCommandBase extends Command {
     protected static final double MAX_ROTATION_SPEED = 0.2;
     protected static final double MIN_ROTATION_SPEED = 0.02; // Deadband
 
-    protected OrientationCommandBase(DriveSubsystem drive, Supplier<Pose2d> poseEstimator) {
+    public OrientationCommandBase(DriveSubsystem drive, Supplier<Pose2d> poseEstimator) {
         this.drive = drive;
         this.poseEstimator = poseEstimator;
 

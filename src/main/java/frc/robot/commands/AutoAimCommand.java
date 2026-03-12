@@ -16,7 +16,7 @@ import frc.robot.subsystems.DriveSubsystem;
 
 public class AutoAimCommand extends OrientToPointAndDistanceCommand {
 
-    private static final Double AUTO_AIM_DISTANCE = 2.25;
+    private static final Double AUTO_AIM_DISTANCE = 2.4;
 
     private static final Translation2d blueTower = new Translation2d(Inches.of(181.56).in(Meters),
             Inches.of(158.32).in(Meters));
@@ -26,6 +26,7 @@ public class AutoAimCommand extends OrientToPointAndDistanceCommand {
     public AutoAimCommand(DriveSubsystem drive,
             Supplier<Pose2d> poseEstimator) {
         super(drive, poseEstimator);
+        SmartDashboard.putNumber("Auto Aim Distance", AUTO_AIM_DISTANCE);
     }
 
     @Override

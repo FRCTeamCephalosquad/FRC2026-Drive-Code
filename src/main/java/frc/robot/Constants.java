@@ -44,15 +44,15 @@ public final class Constants {
     public static final double INDEXER_LAUNCHING_PERCENT = 0.6;
     public static final double INDEXER_SPIN_UP_PRE_LAUNCH_PERCENT = -0.5;
 
-    public static final double SPIN_UP_SECONDS = 0.75;
+    public static final double SPIN_UP_SECONDS = 1;
 
     // Launcher PID gains
     // Tuning order: get KFF close first (1 / NEO free-speed RPM),
     // then nudge KP to eliminate steady-state error. KI and KD are
     // rarely needed for a flywheel — leave them at 0 until you have a reason.
-    public static final double LAUNCHER_KP = 0.0001;
+    public static final double LAUNCHER_KP = 0.0004;
     public static final double LAUNCHER_KI = 0.0;
-    public static final double LAUNCHER_KD = 0.0;
+    public static final double LAUNCHER_KD = 0.01;
     public static final double LAUNCHER_KFF = .0022; // 1 / NEO free-speed RPM
 
     // Target launch speed and at-speed tolerance
