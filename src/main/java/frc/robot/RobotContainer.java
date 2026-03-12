@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
@@ -52,6 +53,7 @@ public class RobotContainer {
     configureBindings();
     autoChooser.setDefaultOption("Shoot & Scoot",
         () -> new ScootAndShoot(driveSubsystem, fuelSubsystem, poseSubsystem::getCurrentPose));
+    SmartDashboard.putData("Auto choices", autoChooser);
   }
 
   /**
