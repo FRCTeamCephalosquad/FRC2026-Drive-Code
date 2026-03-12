@@ -10,6 +10,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import static frc.robot.Constants.OperatorConstants.*;
 
+import java.util.function.Supplier;
+
+import frc.robot.autos.ScootAndShoot;
 import frc.robot.commands.AutoAimCommand;
 import frc.robot.commands.balls.Eject;
 import frc.robot.commands.balls.Intake;
@@ -40,20 +43,15 @@ public class RobotContainer {
       OPERATOR_CONTROLLER_PORT);
 
   // The autonomous chooser
-  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+  private final SendableChooser<Supplier<Command>> autoChooser = new SendableChooser<>();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     configureBindings();
-
-    // Set the options to show up in the Dashboard for selecting auto modes. If you
-    // add additional auto modes you can add additional lines here with
-    // autoChooser.addOption
-    // autoChooser.setDefaultOption("Autonomous", Autos.exampleAuto(driveSubsystem,
-    // ballSubsystem));
-
+    autoChooser.setDefaultOption("Shoot & Scoot",
+        () -> new ScootAndShoot(driveSubsystem, fuelSubsystem, poseSubsystem::getCurrentPose));
   }
 
   /**
@@ -91,7 +89,6 @@ public class RobotContainer {
         poseSubsystem::getCurrentPose));
 
     // Some probably stupid operator commands
-    // TODO operatorController.a().whileTrue(AUTO AIM);
     operatorController.leftTrigger().whileTrue(new Intake(fuelSubsystem));
     operatorController.rightTrigger().whileTrue(new LaunchSequence(fuelSubsystem));
     operatorController.start().whileTrue(new Eject(fuelSubsystem));
@@ -111,6 +108,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return autoChooser.getSelected();
+    return autoChooser.getSelected().get();
   }
 }
