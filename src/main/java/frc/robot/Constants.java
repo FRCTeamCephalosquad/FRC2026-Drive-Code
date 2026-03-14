@@ -29,6 +29,25 @@ public final class Constants {
     public static final int DRIVE_MOTOR_CURRENT_LIMIT = 60;
   }
 
+  public static final class DriveOrientationConstants {
+    // Rotation PID constants - tune these for your robot
+    public static final double ROTATION_KP = 0.02;
+    public static final double ROTATION_KI = 0.0;
+    public static final double ROTATION_KD = 0.002;
+    public static final double ANGLE_TOLERANCE_DEGREES = 2.0;
+    public static final double MAX_ROTATION_SPEED = 0.2;
+    public static final double MIN_ROTATION_SPEED = 0.02; // Deadband
+
+
+    // Distance PID constants - tune these for your robot
+    public static final double DISTANCE_KP = 0.5;
+    public static final double DISTANCE_KI = 0.0;
+    public static final double DISTANCE_KD = 0.0;
+    public static final double DISTANCE_TOLERANCE_METERS = 0.1;
+    public static final double MAX_FORWARD_SPEED = 0.2;
+    public static final double MIN_FORWARD_SPEED = 0.02; // Deadband
+  }
+
   public static final class FuelConstants {
     // Motor controller IDs for Fuel Mechanism motors
     public static final int LEFT_INTAKE_LAUNCHER_MOTOR_ID = 7;

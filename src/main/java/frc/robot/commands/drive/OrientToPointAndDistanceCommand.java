@@ -8,7 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.DriveSubsystem;
-
+import static frc.robot.Constants.DriveOrientationConstants.*;
 /**
  * Command that orients the robot to face a specific point while maintaining
  * a target distance from that point. The robot will drive forward or backward
@@ -21,13 +21,6 @@ public abstract class OrientToPointAndDistanceCommand extends OrientationCommand
 
     private final PIDController distanceController;
 
-    // Distance PID constants - tune these for your robot
-    private static final double DISTANCE_KP = 0.5;
-    private static final double DISTANCE_KI = 0.0;
-    private static final double DISTANCE_KD = 0.0;
-    private static final double DISTANCE_TOLERANCE_METERS = 0.1;
-    private static final double MAX_FORWARD_SPEED = 0.2;
-    private static final double MIN_FORWARD_SPEED = 0.02; // Deadband
 
     // Angle threshold to prioritize orientation over distance correction
     private static final double LARGE_ANGLE_ERROR_THRESHOLD = 15.0; // degrees

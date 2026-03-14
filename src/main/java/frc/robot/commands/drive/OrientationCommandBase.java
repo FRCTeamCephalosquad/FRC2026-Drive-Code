@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
+import static frc.robot.Constants.DriveOrientationConstants.*;
 
 /**
  * Base class for all orientation-based commands.
@@ -18,13 +19,7 @@ public abstract class OrientationCommandBase extends Command {
     protected final Supplier<Pose2d> poseEstimator;
     protected final PIDController rotationController;
 
-    // Rotation PID constants - tune these for your robot
-    protected static final double ROTATION_KP = 0.02;
-    protected static final double ROTATION_KI = 0.0;
-    protected static final double ROTATION_KD = 0.002;
-    protected static final double ANGLE_TOLERANCE_DEGREES = 2.0;
-    protected static final double MAX_ROTATION_SPEED = 0.2;
-    protected static final double MIN_ROTATION_SPEED = 0.02; // Deadband
+
 
     public OrientationCommandBase(DriveSubsystem drive, Supplier<Pose2d> poseEstimator) {
         this.drive = drive;
