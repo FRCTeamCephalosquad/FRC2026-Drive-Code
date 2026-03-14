@@ -20,7 +20,6 @@ import frc.robot.commands.balls.Intake;
 import frc.robot.commands.balls.LaunchSequence;
 import frc.robot.commands.climb.ClimbDown;
 import frc.robot.commands.climb.ClimbUp;
-import frc.robot.commands.drive.JoystickArcadeDriveCommand;
 import frc.robot.commands.drive.JoystickTankDriveCommand;
 import frc.robot.commands.drive.OrientInDirectionCommand;
 import frc.robot.subsystems.DriveSubsystem;
@@ -71,19 +70,19 @@ public class RobotContainer {
      */
 
     // Drive Default
-    if (false) {
+   /* *
       driveSubsystem.setDefaultCommand(
           new JoystickArcadeDriveCommand(
               () -> -driverController.getLeftY(),
               () -> -driverController.getLeftX(),
               driveSubsystem));
-    } else {
-      driveSubsystem.setDefaultCommand(
-          new JoystickTankDriveCommand(
-              () -> -driverController.getLeftY(),
-              () -> -driverController.getRightY(),
-              driveSubsystem));
-    }
+    */
+    driveSubsystem.setDefaultCommand(
+        new JoystickTankDriveCommand(
+            () -> -driverController.getLeftY(),
+            () -> -driverController.getRightY(),
+            driveSubsystem));
+    
 
     // Fuesl and Climber both default to stop
     fuelSubsystem.setDefaultCommand(fuelSubsystem.run(() -> fuelSubsystem.stop()));
@@ -95,7 +94,7 @@ public class RobotContainer {
 
     // Some probably stupid operator commands
     operatorController.leftTrigger().whileTrue(new Intake(fuelSubsystem));
-    operatorController.rightTrigger().whileTrue(new LaunchSequence(fuelSubsystem));
+    operatorController.rightTrigger().whileTrue(new LaunchSequence(fuelSubsystem, hopperSubsystem));
     operatorController.start().whileTrue(new Eject(fuelSubsystem));
 
     //driverController.povDown().whileTrue(new ClimbDown(climberSubsystem));
