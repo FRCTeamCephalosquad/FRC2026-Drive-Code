@@ -15,6 +15,7 @@ import java.util.function.Supplier;
 
 import frc.robot.autos.ScootAndShoot;
 import frc.robot.commands.AutoAimCommand;
+import frc.robot.commands.ClimbPosition;
 import frc.robot.commands.balls.Eject;
 import frc.robot.commands.balls.Intake;
 import frc.robot.commands.balls.LaunchSequence;
@@ -97,8 +98,10 @@ public class RobotContainer {
     operatorController.rightTrigger().whileTrue(new LaunchSequence(fuelSubsystem, hopperSubsystem));
     operatorController.start().whileTrue(new Eject(fuelSubsystem));
 
-    //driverController.povDown().whileTrue(new ClimbDown(climberSubsystem));
-    //driverController.povUp().whileTrue(new ClimbUp(climberSubsystem));
+    driverController.a().whileTrue(new ClimbDown(climberSubsystem));
+    driverController.y().whileTrue(new ClimbUp(climberSubsystem));
+
+    driverController.x().whileTrue(new ClimbPosition(driveSubsystem, poseSubsystem::getCurrentPose));
 
     driverController.povUp()
         .whileTrue(new OrientInDirectionCommand(driveSubsystem, poseSubsystem::getCurrentPose, 0));

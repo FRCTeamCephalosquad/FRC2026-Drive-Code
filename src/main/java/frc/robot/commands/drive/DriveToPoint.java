@@ -2,8 +2,10 @@ package frc.robot.commands.drive;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
@@ -12,18 +14,22 @@ import static frc.robot.Constants.DriveOrientationConstants.*;
 public class DriveToPoint extends Command {
 
     private final DriveSubsystem m_drive;
-    private final Pose2d m_target;
-    Supplier<Pose2d> m_poseEstimator;
+    private final Supplier<Translation2d> m_target;
+    private final Supplier<Pose2d> m_poseEstimator;
+    private final double m_maxSpeed;
+    private final double m_maxRot;
 
     private final PIDController m_turnPID   = new PIDController(0,0,0);
     private final PIDController m_drivePID  = new PIDController(0,0,0);
 
     private static final double DISTANCE_TOLERANCE = 0.1; // meters
 
-    public DriveToPoint(DriveSubsystem drive, Pose2d target, Supplier<Pose2d> poseEstimator ) {
+    public DriveToPoint(DriveSubsystem drive, Supplier<Pose2d> poseEstimator, Supplier<Translation2d> target, double maxSpeed, double maxRot ) {
         m_drive  = drive;
-        m_target = target;
         m_poseEstimator = poseEstimator;
+        m_target = target;
+        m_maxSpeed = maxSpeed;
+        m_maxRot = maxRot;
         m_turnPID.enableContinuousInput(-180, 180);
         m_drivePID.setSetpoint(0);
         addRequirements(drive);
@@ -51,8 +57,8 @@ public class DriveToPoint extends Command {
     public void execute() {
         Pose2d current = m_poseEstimator.get();
 
-        double dx = m_target.getX() - current.getX();
-        double dy = m_target.getY() - current.getY();
+        double dx = m_target.get().getX() - current.getX();
+        double dy = m_target.get().getY() - current.getY();
         double distance = Math.hypot(dx, dy);
 
         // Desired heading to the point (degrees, field-relative)
@@ -63,7 +69,8 @@ public class DriveToPoint extends Command {
         double driveOutput = m_drivePID.calculate(-distance); // negative because setpoint is 0
 
         // Clamp drive output so it doesn't go crazy
-        driveOutput = Math.min(driveOutput, 0.5);
+        driveOutput = Math.min(driveOutput, m_maxSpeed);
+        turnOutput = MathUtil.clamp(turnOutput, -m_maxRot, m_maxRot);
 
         m_drive.arcadeDrive(driveOutput, turnOutput);
     }
@@ -71,8 +78,8 @@ public class DriveToPoint extends Command {
     @Override
     public boolean isFinished() {
         Pose2d current = m_poseEstimator.get();
-        double dx = m_target.getX() - current.getX();
-        double dy = m_target.getY() - current.getY();
+        double dx = m_target.get().getX() - current.getX();
+        double dy = m_target.get().getY() - current.getY();
         return Math.hypot(dx, dy) < DISTANCE_TOLERANCE;
     }
 
