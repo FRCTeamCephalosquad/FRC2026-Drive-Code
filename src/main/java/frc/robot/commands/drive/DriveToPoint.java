@@ -6,6 +6,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
@@ -64,9 +65,13 @@ public class DriveToPoint extends Command {
         // Desired heading to the point (degrees, field-relative)
         double desiredHeadingDeg = Math.toDegrees(Math.atan2(dy, dx));
         double currentHeadingDeg = current.getRotation().getDegrees();
-
+        double absAngleError = Math.abs(Units.radiansToDegrees(MathUtil.angleModulus(Units.degreesToRadians(desiredHeadingDeg-currentHeadingDeg))));
+System.out.println(absAngleError);
         double turnOutput  = m_turnPID.calculate(currentHeadingDeg, desiredHeadingDeg);
         double driveOutput = m_drivePID.calculate(-distance); // negative because setpoint is 0
+
+        if ( absAngleError > 15 )
+            driveOutput = 0;
 
         // Clamp drive output so it doesn't go crazy
         driveOutput = Math.min(driveOutput, m_maxSpeed);

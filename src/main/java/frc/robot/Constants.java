@@ -72,7 +72,7 @@ public final class Constants {
     public static final double LAUNCHER_KP = 0.0004;
     public static final double LAUNCHER_KI = 0.0;
     public static final double LAUNCHER_KD = 0.01;
-    public static final double LAUNCHER_KFF = .0022; // 1 / NEO free-speed RPM
+    public static final double LAUNCHER_KFF = .0028; // 1 / NEO free-speed RPM
 
     // Target launch speed and at-speed tolerance
     public static final double LAUNCHER_LAUNCH_RPM = 4500; // tune to your shot distance
