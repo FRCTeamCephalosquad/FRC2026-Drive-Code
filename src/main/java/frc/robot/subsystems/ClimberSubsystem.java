@@ -20,6 +20,8 @@ public class ClimberSubsystem extends SubsystemBase {
   private final SparkMax climberMotor;
   private final CANcoder climbEncoder = new CANcoder(15);
 
+  private double offset = 0;
+
   private static final double CLIMBER_READY_DEGREES = 105.0;
   private static final double CLIMBER_CLIMB_DEGREES = -15;
 
@@ -35,6 +37,8 @@ public class ClimberSubsystem extends SubsystemBase {
     climbConfig.smartCurrentLimit(CLIMBER_MOTOR_CURRENT_LIMIT);
     climbConfig.idleMode(IdleMode.kBrake);
     climberMotor.configure(climbConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    offset = getPosition();
   }
 
   // A method to set the percentage of the climber
@@ -49,13 +53,14 @@ public class ClimberSubsystem extends SubsystemBase {
 
   private double getPosition() {
     double degrees = climbEncoder.getPosition().getValue().in(Degrees) * (12.0 / 28.0);
-    degrees -= 52;
+    degrees -= offset;
     return degrees;
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Climber/Encoder", getPosition());
+    SmartDashboard.putNumber("Climber/Offset", offset);
   }
 
   public Command MoveToReady() {

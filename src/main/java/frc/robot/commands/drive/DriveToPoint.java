@@ -66,13 +66,14 @@ public class DriveToPoint extends Command {
         double desiredHeadingDeg = Math.toDegrees(Math.atan2(dy, dx));
         double currentHeadingDeg = current.getRotation().getDegrees();
         double absAngleError = Math.abs(Units.radiansToDegrees(MathUtil.angleModulus(Units.degreesToRadians(desiredHeadingDeg-currentHeadingDeg))));
-System.out.println(absAngleError);
+
         double turnOutput  = m_turnPID.calculate(currentHeadingDeg, desiredHeadingDeg);
         double driveOutput = m_drivePID.calculate(-distance); // negative because setpoint is 0
 
         if ( absAngleError > 15 )
             driveOutput = 0;
-
+        
+        System.out.println(currentHeadingDeg + " " + desiredHeadingDeg + " " + absAngleError + " " + turnOutput);
         // Clamp drive output so it doesn't go crazy
         driveOutput = Math.min(driveOutput, m_maxSpeed);
         turnOutput = MathUtil.clamp(turnOutput, -m_maxRot, m_maxRot);

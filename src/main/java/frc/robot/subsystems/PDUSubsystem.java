@@ -28,8 +28,12 @@ public class PDUSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Indexer", pdu.getCurrent(5));
         SmartDashboard.putNumber("Climber", pdu.getCurrent(7));
 
-        // probably
         SmartDashboard.putNumber("Hopper", pdu.getCurrent(3));
+        SmartDashboard.putNumber("Vision Current", pdu.getCurrent(0));
+
+        SmartDashboard.putNumber("RIO Current", pdu.getCurrent(20));
+        SmartDashboard.putNumber("Radio Current", pdu.getCurrent(21));
+        SmartDashboard.putNumber("Fan Current", pdu.getCurrent(22));
 
     }
 

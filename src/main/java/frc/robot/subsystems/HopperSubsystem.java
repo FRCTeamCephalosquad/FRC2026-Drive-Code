@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class HopperSubsystem extends SubsystemBase {
     private final SparkMax motor;
 
-    private static final double DOWN_LIMIT = 210;
+    private static final double DOWN_LIMIT = 220;
     private static final double WIGGLE_LIMIT = 150;
     private static final double UP_LIMIT = 0;
 
@@ -25,7 +25,7 @@ public class HopperSubsystem extends SubsystemBase {
 
         SparkMaxConfig motorConfig = new SparkMaxConfig();
         motorConfig.smartCurrentLimit(20);
-        motorConfig.idleMode(IdleMode.kCoast);
+        motorConfig.idleMode(IdleMode.kBrake);
         motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
