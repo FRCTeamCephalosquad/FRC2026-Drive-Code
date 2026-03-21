@@ -15,8 +15,8 @@ import frc.robot.subsystems.DriveSubsystem;
 public class ClimbPosition extends SequentialCommandGroup {
     private static final Translation2d blue1 = new Translation2d(2, 3.25);
     private static final Translation2d blue2 = new Translation2d(1.3, 3.25);
-    private static final Translation2d red1 = new Translation2d(13.49, 4.61);
-    private static final Translation2d red2 = new Translation2d(13.82, 4.61);
+    private static final Translation2d red1 = new Translation2d(14.4, 4.78);
+    private static final Translation2d red2 = new Translation2d(15.2, 4.78);
 
     public ClimbPosition(DriveSubsystem drive, Supplier<Pose2d> poseEstimator) {
         addCommands(    
