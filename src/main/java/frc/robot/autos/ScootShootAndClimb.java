@@ -9,12 +9,14 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.FuelConstants;
 import frc.robot.commands.AutoAimCommand;
+import frc.robot.commands.ClimbPosition;
 import frc.robot.commands.balls.Launch;
 import frc.robot.commands.balls.SpinUp;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FuelSubsystem;
 
-public class ScootAndShoot extends SequentialCommandGroup {
+public class ScootShootAndClimb extends SequentialCommandGroup {
 
     public static final double DRIVE_TIME = 1;
     public static final double DRIVE_SPEED = 0.2;
@@ -28,7 +30,8 @@ public class ScootAndShoot extends SequentialCommandGroup {
         SmartDashboard.putNumber("Auto/ScootAndShoot/ShootTime", SHOOT_TIME);
     }
 
-    public ScootAndShoot(DriveSubsystem driveSubsystem, FuelSubsystem ballSubsystem, Supplier<Pose2d> poseSupplier) {
+    public ScootShootAndClimb(DriveSubsystem driveSubsystem, FuelSubsystem ballSubsystem, ClimberSubsystem climb,
+            Supplier<Pose2d> poseSupplier) {
         Command backUp = Commands.runEnd(
                 () -> driveSubsystem
                         .arcadeDrive(SmartDashboard.getNumber("Auto/ScootAndShoot/DriveSpeed", DRIVE_SPEED), 0),
@@ -48,7 +51,11 @@ public class ScootAndShoot extends SequentialCommandGroup {
                 Commands.runOnce(ballSubsystem::stop),
                 backUp,
                 aim,
-                shoot,
-                Commands.runOnce(ballSubsystem::stop));
+                Commands.parallel(
+                        climb.MoveToReady(),
+                        shoot),
+                Commands.runOnce(ballSubsystem::stop),
+                new ClimbPosition(driveSubsystem, poseSupplier),
+                climb.Climb());
     }
 }
