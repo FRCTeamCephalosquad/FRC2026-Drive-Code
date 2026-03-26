@@ -57,10 +57,10 @@ public class RobotContainer {
      */
     public RobotContainer() {
         configureBindings();
-        autoChooser.setDefaultOption("Shoot & Scoot",
+        autoChooser.addOption("Shoot & Scoot",
                 () -> new ScootAndShoot(driveSubsystem, fuelSubsystem, getPose));
 
-        autoChooser.addOption("Scoot Shoot & Climb",
+        autoChooser.setDefaultOption("Scoot Shoot & Climb",
                 () -> new ScootShootAndClimb(driveSubsystem, fuelSubsystem, climberSubsystem, getPose));
 
         SmartDashboard.putData("Auto choices", autoChooser);

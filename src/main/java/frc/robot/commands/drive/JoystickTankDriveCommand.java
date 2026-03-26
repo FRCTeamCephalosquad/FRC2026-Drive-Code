@@ -4,6 +4,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -17,11 +18,11 @@ public class JoystickTankDriveCommand extends Command {
         GYRO_HOLD
     }
 
-    private static final double DRIVE_SYNC_THRESHOLD = 0.05;
+    private static final double DRIVE_SYNC_THRESHOLD = 0.1;
     private static final double HEADING_KP = 0.01;
     private static final double MAX_HEADING_CORRECTION = 0.1;
 
-    private final StraightLineMode straightLineMode = StraightLineMode.NONE;
+    private final StraightLineMode straightLineMode = StraightLineMode.INPUT_SYNC;
     private boolean holdingHeading = false;
     private double headingTarget = 0.0;
 
@@ -37,6 +38,7 @@ public class JoystickTankDriveCommand extends Command {
         this.rSpeedSupplier = rSpeed;
         this.driveSubsystem = driveSubsystem;
         addRequirements(driveSubsystem);
+        SmartDashboard.putBoolean("Holding Heading", false);
     }
 
     @Override
@@ -89,6 +91,7 @@ public class JoystickTankDriveCommand extends Command {
                     lSpeed = avg;
                     rSpeed = avg;
                 }
+                SmartDashboard.putBoolean("Holding Heading", isStraight);
                 break;
 
             case GYRO_HOLD:
@@ -108,6 +111,7 @@ public class JoystickTankDriveCommand extends Command {
                 } else {
                     holdingHeading = false;
                 }
+                SmartDashboard.putBoolean("Holding Heading", isStraight);
                 break;
 
             case NONE:
