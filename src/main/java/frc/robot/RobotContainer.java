@@ -61,7 +61,7 @@ public class RobotContainer {
                 () -> new ScootAndShoot(driveSubsystem, fuelSubsystem, getPose));
 
         autoChooser.setDefaultOption("Scoot Shoot & Climb",
-                () -> new ScootShootAndClimb(driveSubsystem, fuelSubsystem, climberSubsystem, getPose));
+                () -> new ScootShootAndClimb(driveSubsystem, fuelSubsystem, climberSubsystem, hopperSubsystem, getPose));
 
         SmartDashboard.putData("Auto choices", autoChooser);
     }
@@ -121,7 +121,7 @@ public class RobotContainer {
         driverController.y().whileTrue(climberSubsystem.Climb());
         driverController.b().whileTrue(climberSubsystem.Reset());
 
-        driverController.x().whileTrue(new ClimbPosition(driveSubsystem, getPose));
+        driverController.x().whileTrue(new ClimbPosition(driveSubsystem, climberSubsystem, hopperSubsystem, getPose));
 
     }
 

@@ -15,6 +15,7 @@ import frc.robot.commands.balls.SpinUp;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FuelSubsystem;
+import frc.robot.subsystems.HopperSubsystem;
 
 public class ScootShootAndClimb extends SequentialCommandGroup {
 
@@ -30,7 +31,7 @@ public class ScootShootAndClimb extends SequentialCommandGroup {
         SmartDashboard.putNumber("Auto/ScootAndShoot/ShootTime", SHOOT_TIME);
     }
 
-    public ScootShootAndClimb(DriveSubsystem driveSubsystem, FuelSubsystem ballSubsystem, ClimberSubsystem climb,
+    public ScootShootAndClimb(DriveSubsystem driveSubsystem, FuelSubsystem ballSubsystem, ClimberSubsystem climb, HopperSubsystem hopper,
             Supplier<Pose2d> poseSupplier) {
         Command backUp = Commands.runEnd(
                 () -> driveSubsystem
@@ -55,7 +56,7 @@ public class ScootShootAndClimb extends SequentialCommandGroup {
                         climb.MoveToReady(),
                         shoot),
                 Commands.runOnce(ballSubsystem::stop),
-                new ClimbPosition(driveSubsystem, poseSupplier),
+                new ClimbPosition(driveSubsystem, climb, hopper, poseSupplier),
                 climb.Climb());
     }
 }
