@@ -104,14 +104,23 @@ public class RobotContainer {
                         driveSubsystem));
 
         // Field relative D-PAD helpers
+        final double dPadSpeed = .35;
         driverController.povUp()
-                .whileTrue(new OrientInDirectionCommand(driveSubsystem, getPose, 0));
+                .whileTrue(new OrientInDirectionCommand(driveSubsystem, getPose, 0, dPadSpeed));
+        driverController.povUpLeft()
+                .whileTrue(new OrientInDirectionCommand(driveSubsystem, getPose, 45, dPadSpeed));
         driverController.povLeft()
-                .whileTrue(new OrientInDirectionCommand(driveSubsystem, getPose, 90));
+                .whileTrue(new OrientInDirectionCommand(driveSubsystem, getPose, 90, dPadSpeed));
+        driverController.povDownLeft()
+                .whileTrue(new OrientInDirectionCommand(driveSubsystem, getPose, 135, dPadSpeed));
         driverController.povDown()
-                .whileTrue(new OrientInDirectionCommand(driveSubsystem, getPose, 180));
+                .whileTrue(new OrientInDirectionCommand(driveSubsystem, getPose, 180, dPadSpeed));
+        driverController.povDownRight()
+                .whileTrue(new OrientInDirectionCommand(driveSubsystem, getPose, 225, dPadSpeed));
         driverController.povRight()
-                .whileTrue(new OrientInDirectionCommand(driveSubsystem, getPose, 270));
+                .whileTrue(new OrientInDirectionCommand(driveSubsystem, getPose, 270, dPadSpeed));
+        driverController.povUpRight()
+                .whileTrue(new OrientInDirectionCommand(driveSubsystem, getPose, 315, dPadSpeed));
 
         // Climber Related
         driverController.a().whileTrue(
