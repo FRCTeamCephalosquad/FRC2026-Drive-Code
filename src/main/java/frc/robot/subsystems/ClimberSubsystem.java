@@ -80,4 +80,18 @@ public class ClimberSubsystem extends SubsystemBase {
       climberMotor.set(CLIMBER_MOTOR_DOWN_PERCENT * -Math.signum(getPosition()));
     }, climberMotor::stopMotor, this).until(() -> Math.abs(getPosition()) < 5);
   }
+
+  public Command trimUpNoLimit() {
+    return Commands.runEnd(() -> {
+      climberMotor.set(CLIMBER_MOTOR_UP_PERCENT);
+      offset = climbEncoder.getPosition().getValue().in(Degrees) * (12.0 / 28.0);;
+    }, climberMotor::stopMotor, this);
+  }
+
+  public Command trimDownNoLimit() {
+    return Commands.runEnd(() -> {
+      climberMotor.set(CLIMBER_MOTOR_DOWN_PERCENT);
+      offset = climbEncoder.getPosition().getValue().in(Degrees) * (12.0 / 28.0);;
+    }, climberMotor::stopMotor, this);
+  }
 }

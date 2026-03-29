@@ -1,7 +1,5 @@
 package frc.robot.commands.drive;
 
-import static frc.robot.Constants.DriveOrientationConstants.ANGLE_TOLERANCE_DEGREES;
-
 import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 
@@ -38,7 +36,7 @@ public class OrientInDirectionCommand extends OrientationCommandBase {
 
     @Override
     protected double getForwardSpeed() {
-        if (Math.abs(rotationController.getError()) < 8)
+        if (Math.abs(rotationController.getError()) < 10)
             return forwardSpeedSupplier.get();
         return 0;
     }

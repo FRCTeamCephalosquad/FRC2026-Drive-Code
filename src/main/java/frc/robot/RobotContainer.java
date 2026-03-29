@@ -123,12 +123,15 @@ public class RobotContainer {
                 .whileTrue(new OrientInDirectionCommand(driveSubsystem, getPose, 315, dPadSpeed));
 
         // Climber Related
-        driverController.a().whileTrue(
+        driverController.a().and(driverController.start().negate()).whileTrue(
                 Commands.sequence(
                         hopperSubsystem.raiseCommand(),
                         climberSubsystem.MoveToReady()));
-        driverController.y().whileTrue(climberSubsystem.Climb());
-        driverController.b().whileTrue(climberSubsystem.Reset());
+        driverController.y().and(driverController.start().negate()).whileTrue(climberSubsystem.Climb());
+        driverController.b().and(driverController.start().negate()).whileTrue(climberSubsystem.Reset());
+
+        driverController.y().and(driverController.start()).whileTrue(climberSubsystem.trimUpNoLimit());
+        driverController.a().and(driverController.start()).whileTrue(climberSubsystem.trimDownNoLimit());
 
         driverController.x().whileTrue(new ClimbPosition(driveSubsystem, climberSubsystem, hopperSubsystem, getPose));
 
